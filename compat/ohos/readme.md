@@ -55,7 +55,7 @@ $hdc = Join-Path $env:DEVECO_HOME 'sdk\default\openharmony\toolchains\hdc.exe'
 ## 行为与验证边界
 
 - 程序更新使用 `filesDir/appNext → app` 与 `appPrevious` 回滚，数据单独存于 `filesDir/data`。覆盖安装替换程序资源，不覆盖设置和工作区；卸载会清除应用数据。
-- 沿用移动端随机端口、一次启动令牌及 HttpOnly Cookie 鉴权。原生桥仅接受本机同源 `toonflow://save` 和重启请求，外部网页在系统浏览器打开。
+- 沿用移动端随机端口、一次启动令牌及 HttpOnly Cookie 鉴权。原生桥仅接受本机同源 `qemixflow://save` 和重启请求，外部网页在系统浏览器打开。
 - 首次进入网页前执行现有浏览器能力预检；系统 ArkWeb 不满足要求时显示错误。OHOS 不含 Android GeckoView。
 - 保留横屏、全屏、文件上传和系统文件保存；设备互联可手输配对码。相机授权和拍摄扫码尚未接入。
 - Bun 随 Ability 生命周期运行，没有后台长任务保证。`TOONFLOW_PLATFORM=ohos` 用于避免把该 Bun 报告的 `linux` 误当作 Linux FFmpeg 支持。

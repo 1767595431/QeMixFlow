@@ -4,8 +4,8 @@ description: 在 QeMixFlow 当前画布中把创意、小说或定稿剧本制�
 metadata:
   version: "2.7.0"
   displayName: 视频制作工作流
-  : QeMixFlow
-  github: https://github.com/HBAI-Ltd/Toonflow-app
+  author: QeMixFlow
+  github: https://github.com/1767595431/QeMixFlow
 ---
 
 # QeMixFlow 画布制作工作流

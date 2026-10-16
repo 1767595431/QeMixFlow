@@ -4,8 +4,8 @@ description: 融合 QeMixFlow v1.1.8 的编剧方法、12 类叙事技法、11 �
 metadata:
   version: "1.1.0"
   displayName: v1.1.8 分集制作流程
-  : QeMixFlow
-  github: https://github.com/HBAI-Ltd/Toonflow-app
+  author: QeMixFlow
+  github: https://github.com/1767595431/QeMixFlow
 ---
 
 # v1.1.8 分集制作流程

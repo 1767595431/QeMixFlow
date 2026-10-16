@@ -5,15 +5,15 @@ Function logWebView2Check
   DetailPrint "WebView2 [$4] 返回码：$0"
   DetailPrint "$1"
   ClearErrors
-  FileOpen $3 "$TEMP\toonflowWebView2Check.log" a
+  FileOpen $3 "$TEMP\qemixflowWebView2Check.log" a
   ${IfNot} ${Errors}
     FileWriteUTF16LE $3 "stage=$4; result=$0$\r$\n$1$\r$\n$\r$\n"
     FileClose $3
   ${EndIf}
   ${If} ${Errors}
-    DetailPrint "无法写入诊断日志：$TEMP\toonflowWebView2Check.log，请保留安装详情。"
+    DetailPrint "无法写入诊断日志：$TEMP\qemixflowWebView2Check.log，请保留安装详情。"
   ${Else}
-    DetailPrint "诊断日志：$TEMP\toonflowWebView2Check.log"
+    DetailPrint "诊断日志：$TEMP\qemixflowWebView2Check.log"
   ${EndIf}
   ; ACT: 日志写入失败只影响诊断，不改变 WebView2 探测结果。
   ClearErrors
@@ -56,7 +56,7 @@ Function ensureWebView2
       ; ACT: 静默安装不因实测失败弹框或提权，交由调用方根据退出码和日志处理。
       Goto webView2Abort
     ${EndIf}
-    MessageBox MB_YESNO|MB_ICONEXCLAMATION "检测到了 WebView2，但未能完成实际启动测试。可能与运行时、权限或系统策略有关。$\r$\n是否尝试使用微软组件修复？修复过程可能请求管理员权限；完成后将重新测试一次。$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\toonflowWebView2Check.log" /SD IDNO IDNO webView2Abort
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "检测到了 WebView2，但未能完成实际启动测试。可能与运行时、权限或系统策略有关。$\r$\n是否尝试使用微软组件修复？修复过程可能请求管理员权限；完成后将重新测试一次。$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\qemixflowWebView2Check.log" /SD IDNO IDNO webView2Abort
     SetDetailsPrint textonly
     DetailPrint "正在调用微软 WebView2 修复入口，请完成微软窗口中的操作…"
     SetDetailsPrint none
@@ -72,13 +72,13 @@ Function ensureWebView2
       DetailPrint "没有可用的微软注册修复入口，改用微软安装器进行安装或更新。"
       Goto installWebView2
     ${EndIf}
-    MessageBox MB_OK|MB_ICONSTOP "未能完成 WebView2 修复，应用安装已停止。$\r$\n请确认微软修复进程已结束，再手动修复或重新运行安装包。$\r$\n修复返回码：$0$\r$\n诊断日志：$TEMP\toonflowWebView2Check.log$\r$\n$1" /SD IDOK
+    MessageBox MB_OK|MB_ICONSTOP "未能完成 WebView2 修复，应用安装已停止。$\r$\n请确认微软修复进程已结束，再手动修复或重新运行安装包。$\r$\n修复返回码：$0$\r$\n诊断日志：$TEMP\qemixflowWebView2Check.log$\r$\n$1" /SD IDOK
     Goto webView2Abort
   ${EndIf}
   ${If} $0 != 1
   ${AndIf} $0 != 3
     ${IfNot} ${Silent}
-      MessageBox MB_OK|MB_ICONSTOP "无法完成 WebView2 检测，应用安装已停止。请重新运行安装包。$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\toonflowWebView2Check.log$\r$\n$1" /SD IDOK
+      MessageBox MB_OK|MB_ICONSTOP "无法完成 WebView2 检测，应用安装已停止。请重新运行安装包。$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\qemixflowWebView2Check.log$\r$\n$1" /SD IDOK
     ${EndIf}
     Goto webView2Abort
   ${EndIf}
@@ -114,7 +114,7 @@ recheckWebView2:
   Call runWebView2Check
   ${If} $0 != 0
     ${IfNot} ${Silent}
-      MessageBox MB_YESNO|MB_ICONSTOP "WebView2 启动验证仍未通过，应用安装已停止。$\r$\n若微软安装或修复仍在进行，请等待完成后重试；否则请联系管理员检查运行时、权限与系统策略。$\r$\n是否打开微软官方下载页？$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\toonflowWebView2Check.log$\r$\n$1" /SD IDNO IDNO webView2Abort
+      MessageBox MB_YESNO|MB_ICONSTOP "WebView2 启动验证仍未通过，应用安装已停止。$\r$\n若微软安装或修复仍在进行，请等待完成后重试；否则请联系管理员检查运行时、权限与系统策略。$\r$\n是否打开微软官方下载页？$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\qemixflowWebView2Check.log$\r$\n$1" /SD IDNO IDNO webView2Abort
       ExecShell "open" "https://developer.microsoft.com/microsoft-edge/webview2/#download"
     ${EndIf}
     Goto webView2Abort
@@ -124,7 +124,7 @@ recheckWebView2:
 
 webView2Abort:
   SetDetailsPrint both
-  DetailPrint "WebView2 环境校验未通过，应用安装已停止。返回码：$0；诊断日志：$TEMP\toonflowWebView2Check.log"
+  DetailPrint "WebView2 环境校验未通过，应用安装已停止。返回码：$0；诊断日志：$TEMP\qemixflowWebView2Check.log"
   SetErrorLevel 2
   Abort
 FunctionEnd

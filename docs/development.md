@@ -24,10 +24,10 @@
 <details>
 <summary><strong>通过网页唤起桌面安装插件</strong></summary>
 
-安装桌面客户端后，网页可通过 `toonflow://install` 请求安装插件。应用会先展示类型、文件名和下载地址，用户确认后再下载与安装。
+安装桌面客户端后，网页可通过 `qemixflow://install` 请求安装插件。应用会先展示类型、文件名和下载地址，用户确认后再下载与安装。
 
 ```ts
-const link = new URL("toonflow://install");
+const link = new URL("qemixflow://install");
 link.searchParams.set("type", "node");
 link.searchParams.set("url", "https://example.com/plugins/exampleNode.umd.js");
 window.location.href = link.href;

@@ -190,7 +190,7 @@
                 </el-button>
               </el-badge>
               <el-popconfirm
-                v-if="plugin.author !== 'Toonflow' || plugin.type === 'skill' || plugin.type === 'agent' || plugin.type === 'ext'"
+                v-if="!isOfficialAuthor(plugin.author) || plugin.type === 'skill' || plugin.type === 'agent' || plugin.type === 'ext'"
                 :title="`确定卸载“${plugin.displayName}”${plugin.type === 'skill' ? '及其附属文件' : ''}吗？`"
                 width="280"
                 confirmButtonText="卸载"
@@ -612,6 +612,11 @@ async function copyCard(url: string) {
   }
 }
 
+// ACT: 内置节点/工具的 author 随品牌改为 QeMixFlow，远程官方插件仍是 Toonflow，两者都算官方。
+function isOfficialAuthor(author: string | undefined) {
+  return author === "Toonflow" || author === "QeMixFlow";
+}
+
 function canEditPlugin(plugin: Plugin) {
   return (
     activeTab.value === "installed" &&
@@ -739,7 +744,7 @@ async function updatePlugin(plugin: Plugin, action: "setEnabled" | "uninstall", 
     loading.value ||
     pendingPlugins.value.has(plugin.key) ||
     exportingPlugins.value.has(plugin.key) ||
-    (action === "uninstall" && plugin.author === "Toonflow" && (plugin.type === "node" || plugin.type === "tool"))
+    (action === "uninstall" && isOfficialAuthor(plugin.author) && (plugin.type === "node" || plugin.type === "tool"))
   )
     return;
   pendingPlugins.value.add(plugin.key);

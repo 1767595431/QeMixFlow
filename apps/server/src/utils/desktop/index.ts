@@ -5,8 +5,9 @@ import conf from "@/utils/conf";
 import type { DesktopRuntime, desktopUpdateAttempt, updateSnapshot } from "@/types/desktop";
 
 const updateBaseUrls = {
-  official: "https://api.toonflow.net/web/version/desktopUpdates",
-  github: "https://github.com/HBAI-Ltd/Toonflow-app/releases/latest/download",
+  // ACT: 定制版只认自己的发布源；两个入口都指向自有仓库，避免客户端被换成上游 Toonflow 构建。
+  official: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
+  github: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
 };
 const updateRuntimeId = crypto.randomUUID();
 let cancelledUpdateAttempt: string | undefined;
@@ -59,7 +60,7 @@ function getInstallFailure(local: Awaited<ReturnType<DesktopRuntime["updater"]["
     currentVersion: local.version,
     currentHash: local.hash,
     message,
-    downloadUrl: "https://github.com/HBAI-Ltd/Toonflow-app/releases/latest",
+    downloadUrl: "https://github.com/1767595431/QeMixFlow/releases/latest",
   };
 }
 

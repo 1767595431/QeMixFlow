@@ -45,7 +45,7 @@ async function restoreInstallRegistration(installDirectory: string) {
       }
       const protocolLauncher = resolve(PATHS.RESOURCES_FOLDER, "app/protocolLauncher.exe");
       if (existsSync(protocolLauncher)) {
-        const protocolKey = "HKCU\\Software\\Classes\\toonflow";
+        const protocolKey = "HKCU\\Software\\Classes\\qemixflow";
         const commandKey = `${protocolKey}\\shell\\open\\command`;
         const command = `"${protocolLauncher}" "%1"`;
         let protocolExists = true;

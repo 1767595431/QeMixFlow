@@ -4,11 +4,11 @@ const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? 
 
 export default {
   app: {
-    name: "toonflow",
-    identifier: "local.toonflow.desktop",
+    name: "QeMixFlow",
+    identifier: "local.qemixflow.desktop",
     // ACT: 默认版本即本仓基线版本，与上游 tag 对齐（v2.0.6）；合并上游新版本时同步改这里，或临时用 appVersion=X.Y.Z 覆盖。
     version: process.env.appVersion ?? "2.0.6",
-    urlSchemes: ["toonflow"],
+    urlSchemes: ["qemixflow"],
   },
   build: {
     mainProcess: "bun",
@@ -51,7 +51,8 @@ export default {
   },
   release: {
     // ACT: 构建基线和补丁固定取 GitHub；客户端更新源由设置单独控制，默认官方源。
-    baseUrl: `${process.env.GITHUB_SERVER_URL || "https://github.com"}/${process.env.GITHUB_REPOSITORY || "HBAI-Ltd/Toonflow-app"}/releases/latest/download`,
+    // ACT: 定制版只从自己的仓库取更新，避免客户端被换成上游 Toonflow 构建。
+    baseUrl: `${process.env.GITHUB_SERVER_URL || "https://github.com"}/${process.env.GITHUB_REPOSITORY || "1767595431/QeMixFlow"}/releases/latest/download`,
     // ACT: 常规构建不访问更新服务器；release:desktop 显式开启增量构建。
     generatePatch: process.env.generateUpdatePatch === "1",
   },

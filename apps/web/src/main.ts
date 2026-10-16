@@ -72,7 +72,7 @@ async function notifyDesktopReady(failed = false) {
     try {
       const response = await fetch("/api/connection/disconnect", { method: "POST", headers: { "x-toonflow-workspace": "1" } });
       if (!response.ok) throw new Error((await response.json()).message || "切回本机失败，请重试");
-      if ((await response.json()).restart === "mobile") window.location.href = "toonflow://restart";
+      if ((await response.json()).restart === "mobile") window.location.href = "qemixflow://restart";
     } catch (cause) {
       recoveryError.value = cause instanceof Error ? cause.message : "切回本机失败，请重试";
       disconnecting.value = false;

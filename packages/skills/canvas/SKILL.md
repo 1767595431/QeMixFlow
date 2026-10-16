@@ -4,8 +4,8 @@ description: QeMixFlow 画布操作手册。使用画布工具创建、切换和
 metadata:
   version: "2.1.0"
   displayName: 画布操作手册
-  : QeMixFlow
-  github: https://github.com/HBAI-Ltd/Toonflow-app
+  author: QeMixFlow
+  github: https://github.com/1767595431/QeMixFlow
 ---
 
 # 画布操作手册

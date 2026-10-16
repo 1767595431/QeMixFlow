@@ -71,7 +71,7 @@ export async function changeDeviceConnection(action: "connect" | "disconnect", b
   if (!deviceConnectionSupported.value) throw new Error("请使用 QeMixFlow 桌面端或移动客户端连接其他设备");
   const { data } = await axios.post<{ restart: "mobile" | "host"; message?: string }>(`/api/connection/${action}`, body ?? {}, { headers: { "x-toonflow-workspace": "1" } });
   if (data?.restart !== "mobile" && data?.restart !== "host") throw new Error(data?.message || "设备未返回有效的切换方式，请重试");
-  if (data.restart === "mobile") window.location.href = "toonflow://restart";
+  if (data.restart === "mobile") window.location.href = "qemixflow://restart";
 }
 
 document.addEventListener("visibilitychange", () => {

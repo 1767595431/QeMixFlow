@@ -344,3 +344,77 @@ git push qemixflow HEAD:main
 
 - `origin` 仍是上游 `HBAI-Ltd/Toonflow-app`（用于 `git fetch origin --tags` 取新版本）；`qemixflow` 是自己的仓库。
 - 不要用 `git push --tags` 推上游 tag：本机已 fetch 了上游全部 tag，标签名会跟自己的版本号撞车，需要发版时单独打。
+
+---
+
+## 八、安装足迹改名：安装后不出现 Toonflow
+
+客户拿到的安装包必须从路径、注册表到界面都只有 QeMixFlow。本章列出为此改掉的每一处，以及刻意保留的“客户看不到的内部标识”。
+
+### 1. 安装路径、注册表与协议
+
+| 位置 | 上游 | 定制后 |
+| --- | --- | --- |
+| 应用标识（`electrobun.config.ts` 的 `app.identifier`） | `local.toonflow.desktop` | `local.qemixflow.desktop` |
+| 安装目录（NSIS `InstallDir`） | `%LOCALAPPDATA%\local.toonflow.desktop\stable` | `%LOCALAPPDATA%\local.qemixflow.desktop\stable` |
+| 卸载注册表项 | `...\Uninstall\local.toonflow.desktop.stable` | `...\Uninstall\local.qemixflow.desktop.stable`（显示名 QeMixFlow） |
+| 安装目录标记文件 | `toonflow.ini` | `qemixflow.ini` |
+| 卸载项里的目录值 | `toonflowInstallDirectory` | `qemixflowInstallDirectory` |
+| URL 协议 | `toonflow://` | `qemixflow://`（注册到 `HKCU\Software\Classes\qemixflow`） |
+| WebView2 检测日志 | `%TEMP%\toonflowWebView2Check.log` | `%TEMP%\qemixflowWebView2Check.log` |
+| 更新临时器 | `%TEMP%\toonflowUpdate-<id>.exe` | `%TEMP%\qemixflowUpdate-<id>.exe` |
+
+改这些必须成对改：标识同时出现在 `electrobun.config.ts`、`apps/desktop/src/update/windowsUpdater.ts`、`apps/desktop/native/updateHelper.cs`；`toonflow.ini` 与 `toonflowInstallDirectory` 同时出现在 `apps/desktop/installer/installer.nsi` 与 `updateHelper.cs`。任何一处漏改，安装后的一键更新会认不出自己的安装目录。
+
+协议改名波及所有发出/校验链接的地方：`apps/web/src/main.ts`、`lib/saveFile.ts`、`lib/mobile.ts`、`apps/server/src/remoteConnection.ts`、`utils/mcp/resources.ts`、`apps/desktop/src/protocol.ts`、`native/protocolLauncher.cs`，以及 22 个 i18n 文件里的 `qemixflow://` 说明文案。
+
+### 2. 更新源与匿名统计
+
+- `apps/server/src/utils/desktop/index.ts`：`official` 与 `github` 两个更新源都由上游地址改为 `https://github.com/1767595431/QeMixFlow/releases/latest/download`，安装失败提示里的下载地址同步改。**不改这一项，客户端会把官方 Toonflow 版当成新版本下载回来。**
+- `electrobun.config.ts` 的 `release.baseUrl` 默认值同样指向自有仓库。
+- `apps/web/src/stores/settings.ts`：`dataCollectionEnabled` 默认由“开”改为“关”（`=== true`），新装客户端不再向 `api.toonflow.net/web/telemetry/report` 上报匿名使用数据；客户可在“隐私”面板自行开启。
+
+### 3. 界面里会露出的作者与链接
+
+- 内置节点/工具的元数据 `author` 由 `Toonflow` 改为 `QeMixFlow`（9 个 `packages/nodes/*/vite.config.ts` + 9 个 `packages/tools/*/build.ts`），`github` 改指自有仓库。插件市场列表直接显示这个字段，不改就会在“已安装”里看到 Toonflow。
+- 因作者值变了，`apps/web/src/components/settings/panels/pluginMarket/index.vue` 里的官方插件判定改成 `isOfficialAuthor()`，`Toonflow`（远程官方插件）与 `QeMixFlow`（本仓内置）都算官方，避免内置节点被当成第三方而出现卸载按钮。
+- 技能 frontmatter 的 `author: QeMixFlow`、`github` 同步；顺带修掉上一轮品牌替换脚本吃掉 `author:` 键名留下的 `: QeMixFlow` 非法 YAML（`packages/skills/*/SKILL.md`）。
+- `packages/tools/webFetch/src/index.ts` 的 UA 由 `Toonflow/2.0` 改为 `QeMixFlow/2.0`。
+- `apps/web/src/components/settings/panels/about.vue` 的仓库链接与 aria 文案改指自有仓库（该面板已隐藏，但文案仍在包里）。
+- `packages/i18n`：`GitHub 仓库：…` 的键与译文、`qemixflow://` 说明全部改名。
+
+### 4. 刻意保留的内部标识（客户看不到）
+
+以下仍然是 `toonflow`，改它们要么会打断与上游的合并流程，要么要动全仓包名，收益为零：
+
+- npm 包名 `@toonflow/*`（工作区包名，出现在所有 import 与构建产物里）；
+- 进程间环境变量 `TOONFLOW_*`、HTTP 头 `x-toonflow-*`、页面事件与存储键 `toonflow:*`、CSS 类 `dockviewToonflow`；
+- MCP 相关：包名 `@toonflow/mcp`、CLI 名 `toonflow-mcp`、技能目录 `mcp/skills/toonflow/`、环境变量 `TOONFLOW_MCP_TOKEN`；
+- 节点扩展 API 名 `toonflowNodes.*`（`.hutch` 脚手架按此名注册节点）；
+- 插件市场用来识别“上游官方插件”的 `author === "Toonflow"`（远程插件的元数据由上游市场下发，这里必须认这个值）。
+
+### 5. 交付前的验证方法
+
+安装验证不能在本机 Codex 的 shell 里直接做：该 shell 带 MSIX 包身份，写 `%LOCALAPPDATA%` 会被重定向到 `...\Packages\OpenAI.Codex_*\LocalCache\Local\`，读到的也可能是旧副本。要在包外上下文验证，用计划任务跑一段脚本即可：
+
+```powershell
+schtasks /create /tn qmfCheck /tr 'cmd.exe /c powershell.exe -NoProfile -File "D:\path\check.ps1" > "D:\path\out.log" 2>&1' /sc once /st 23:59 /ru <用户名> /it /f
+schtasks /run /tn qmfCheck
+```
+
+本轮实测（包外上下文、静默安装 `QeMixFlow-2.0.6-Setup.exe /S`）结果：
+
+| 检查项 | 结果 |
+| --- | --- |
+| 安装目录 | `%LOCALAPPDATA%\local.qemixflow.desktop\stable`，目录名与子项无 toonflow |
+| `qemixflow.ini` | `identifier=local.qemixflow.desktop` |
+| 卸载注册表 | 键 `local.qemixflow.desktop.stable`，显示名 QeMixFlow，版本 2.0.6 |
+| 协议注册表 | `HKCU\Software\Classes\qemixflow`；`...\Classes\toonflow` 不存在 |
+| 桌面快捷方式 | `QeMixFlow.lnk` → `...\local.qemixflow.desktop\stable\app\Resources\app\startupLauncher.exe` |
+| 节点/工具元数据 | `"author":"QeMixFlow"` |
+| 技能 frontmatter | `author: QeMixFlow`、`github: .../1767595431/QeMixFlow` |
+| 启动 | 窗口标题 QeMixFlow，引导页正常渲染 |
+
+> 安装包没有代码签名，客户首次运行会看到 SmartScreen“未知发布者”，需要点“更多信息 → 仍要运行”。要消除这个提示只能买代码签名证书。
+>
+> 开始菜单不建快捷方式（上游 NSIS 脚本只建桌面快捷方式），卸载走“设置 → 应用 → QeMixFlow”。

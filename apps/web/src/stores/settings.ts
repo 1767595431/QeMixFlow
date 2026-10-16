@@ -82,7 +82,8 @@ export const privacySettings = computed(() => {
   const raw = settings.value.privacy;
   const privacy = raw && typeof raw === "object" && !Array.isArray(raw) ? raw as Record<string, unknown> : {};
   return {
-    dataCollectionEnabled: privacy.dataCollectionEnabled !== false,
+    // ACT: 定制版默认关闭匿名统计，避免新装客户端把使用数据上报到上游服务；用户可在隐私设置里自行开启。
+    dataCollectionEnabled: privacy.dataCollectionEnabled === true,
     anonymousId: typeof privacy.anonymousId === "string" ? privacy.anonymousId : "",
   };
 });
