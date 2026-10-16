@@ -19,8 +19,7 @@
           :disabled="saving"
           :aria-pressed="selectedProvider === item.id"
           @click="selectedProvider = item.id">
-          <img v-if="item.icon" class="providerLogo" :class="{ monochrome: item.id === 'tfRouter' }" :src="item.icon" alt="" />
-          <modelIcon v-else :model="item.id" :size="18" />
+          <modelIcon :model="item.id" :size="18" />
           <span>{{ item.label }}</span>
         </button>
       </aside>

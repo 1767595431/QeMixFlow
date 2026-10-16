@@ -184,22 +184,66 @@ const autoInstallProviders = [tfRouter];
 
 ## 五、版本更新后如何沿用
 
-1. 拉取上游新版本（建议新建分支），确保工作区干净。
-2. 应用定制补丁：
+`changes.patch` 是**相对上游基线标签**的完整定制差异（不含本目录）。升级按下面的流程做，v2.0.4 → v2.0.6 已按此走通。
+
+1. **先给定制做快照**，确保工作区干净：
 
    ```powershell
-   git apply --3way customization/changes.patch
+   git add -A
+   git commit -m "定制快照"
    ```
 
-   冲突时按本文「一～三」的说明逐项合并；冲突集中在 i18n 译文与 `packages/providers/index.ts`。
-
-3. 运行清理脚本（处理运行时数据并重新编译）：
+2. **取上游新版本并拉一个升级分支**（假设目标标签是 `vX.Y.Z`）：
 
    ```powershell
+   git fetch origin --tags
+   git checkout -b update/vX.Y.Z vX.Y.Z
+   ```
+
+3. **把定制提交 cherry-pick 过来**（`<定制提交>` 换成第 1 步的提交号）：
+
+   ```powershell
+   git cherry-pick <定制提交>
+   ```
+
+4. **逐项解决冲突**。原则：**结构取上游、文案取定制**。上游改写过的文件（尤其 `apps/server/src/app.ts`、`apps/web/src/pages/*`、`packages/providers/index.ts`）优先保留上游新逻辑，再把定制点贴回去。v2.0.6 的冲突共 22 个文件，集中在：
+
+   - 桌面端：上游换了启动器路径（`startupLauncher.exe`）、加了远程连接参数
+   - `app.ts`：上游把预装供应商扩到 4 个（含 `compshare`），定制版只保留 `tfRouter.ts`
+   - `providers/index.ts`：上游新增 `compshare` 与 `getPrice/getBalance` 相关类型导出
+   - 供应商定义新增可选 `icon` 字段；定制版目录里没有自带图标的供应商，两个「添加供应商」对话框仍只用 `modelIcon` 品牌图标
+   - 插件市场：上游把内置插件判断挪到 `pluginMarket/index.vue`，仍是 `author === "Toonflow"`，与定制约定一致
+
+5. **重跑品牌替换**，兜住上游新增/改写的文案：
+
+   ```powershell
+   pwsh -File customization/applyBrand.ps1
+   ```
+
+   脚本用 ripgrep 只扫真正含 `Toonflow` 的文件，替换规则与保护清单见第一章。上游新增的语言文件也会被覆盖。
+
+6. **装依赖 + 类型检查 + 重建**：
+
+   ```powershell
+   bun install --frozen-lockfile
+   bun run --filter @toonflow/server typecheck
+   bun run --filter @toonflow/web typecheck
    pwsh -File customization/reapply.ps1
    ```
 
-4. 上游若新增了语言文件，需对新文件重复第一章的替换规则。
+7. **最后重新生成补丁**，让基线指向新版本：
+
+   ```powershell
+   git diff vX.Y.Z HEAD --binary --full-index -- . ':(exclude)customization' > customization/changes.patch
+   ```
+
+### 升级记录
+
+| 版本 | 上游规模 | 结果 |
+| --- | --- | --- |
+| v2.0.4 → v2.0.6 | 20 个提交、406 个文件（新增 `apps/mobile`、设备互联、compshare 供应商、供应商价格/余额接口） | 定制全部保留，类型检查通过 |
+
+保留的上游新功能：设备互联（手机连接按钮与设置面板）、插件市场「发现插件」、供应商价格/余额相关类型与 UI。
 
 ---
 
