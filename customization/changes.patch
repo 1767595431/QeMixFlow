@@ -694,6 +694,33 @@ index 031b3991dec8bfb4513b33e786f13eab4eaec2e2..945fff78dc0d4e218866cf60c37c561f
              registry.SetValue("DisplayVersion", version);
              registry.SetValue("DisplayIcon", Path.Combine(root, "app", "Resources", "app.ico"));
              registry.SetValue("UninstallString", quote(uninstaller));
+diff --git a/apps/desktop/scripts/packageWindows.ts b/apps/desktop/scripts/packageWindows.ts
+index 9996c85de34711ee35340d6c36c947c7f2174675..4129bf094e7a571541512b2ec94df7a209b37d36 100644
+--- a/apps/desktop/scripts/packageWindows.ts
++++ b/apps/desktop/scripts/packageWindows.ts
+@@ -13,7 +13,8 @@ const projectDir = realpathSync(resolve(import.meta.dirname, "../../.."));
+ process.chdir(projectDir);
+ const nsisDir = resolve("build/desktop/nsis");
+ const artifactDir = resolve(desktopConfig.build.artifactFolder);
+-const outputFile = join(artifactDir, `toonflow-${desktopConfig.app.version}-Setup.exe`);
++// ACT: 安装包文件名是用户下载时可见的品牌面，随定制改名；更新清单与增量补丁仍用 toonflow 前缀，不受影响。
++const outputFile = join(artifactDir, `QeMixFlow-${desktopConfig.app.version}-Setup.exe`);
+ const installerDir = resolve("apps/desktop/installer");
+ const appIcon = resolve("packages/assets/logo.ico");
+ const makensis = process.env.NSIS_PATH ?? "C:/Program Files (x86)/NSIS/makensis.exe";
+diff --git a/apps/desktop/scripts/release.ts b/apps/desktop/scripts/release.ts
+index 05030e2d0b2eaee1a1bc1c8b4c660fcc160e0618..a8fa12df94cdbb3b309cc7193cf22b4e17843fe1 100644
+--- a/apps/desktop/scripts/release.ts
++++ b/apps/desktop/scripts/release.ts
+@@ -94,7 +94,7 @@ if (isMac) {
+   const installers = readdirSync(artifactDir).filter((name) => name.endsWith(".dmg"));
+   if (installers.length !== 1) throw new Error("Mac 发布必须包含且仅包含一个 DMG 安装包。");
+   names.push(installers[0]!);
+-} else names.push(`toonflow-${version}-Setup.exe`);
++} else names.push(`QeMixFlow-${version}-Setup.exe`);
+ if (previousHash) names.push(`${prefix}-${previousHash}.patch`);
+ for (const name of names) {
+   if (!existsSync(join(artifactDir, name))) throw new Error(`构建产物缺失，未创建发布快照：${name}`);
 diff --git a/apps/desktop/src/connection.ts b/apps/desktop/src/connection.ts
 index 52874595dd52eaafc0d66ad93279c56eae18d2f4..bf0972204fd6c446e43ceca13d938ad8f94324a0 100644
 --- a/apps/desktop/src/connection.ts
@@ -42585,6 +42612,42 @@ index 2c507aa6eac39545a4c0c91b01c90417018ae096..709e95d313286b0e725a8149ab7e2d77
      IconMovie: typeof import('@tabler/icons-vue')['IconMovie']
      IconSitemap: typeof import('@tabler/icons-vue')['IconSitemap']
      IconTextSize: typeof import('@tabler/icons-vue')['IconTextSize']
+diff --git a/docs/development.md b/docs/development.md
+index 02bedb579c25899cba753f9a6e54b6eda0213556..aafeb3d023d72b13a885fe4049e30a2098cdba63 100644
+--- a/docs/development.md
++++ b/docs/development.md
+@@ -140,7 +140,7 @@ bun run build:desktop
+ bun run package:desktop
+ ```
+ 
+-安装包输出到 `build/desktop/artifacts/toonflow-<版本>-Setup.exe`。
++安装包输出到 `build/desktop/artifacts/QeMixFlow-<版本>-Setup.exe`。
+ 
+ **macOS**
+ 
+@@ -212,7 +212,7 @@ git push --no-follow-tags origin refs/tags/v2.0.0:refs/tags/v2.0.0
+ 
+ | 平台 | 安装包 | 更新文件 |
+ | --- | --- | --- |
+-| Windows x64 | `toonflow-<版本号>-Setup.exe` | `stable-win-x64-*` |
++| Windows x64 | `QeMixFlow-<版本号>-Setup.exe` | `stable-win-x64-*` |
+ | macOS Intel | DMG | `stable-macos-x64-*` |
+ | macOS Apple Silicon | DMG | `stable-macos-arm64-*` |
+ 
+diff --git a/electrobun.config.ts b/electrobun.config.ts
+index 9c7244a6f4c076307db8b2d50f4782bfe1c01249..cc1c7a8522751d133fd0605394895e0c7b7d3a36 100644
+--- a/electrobun.config.ts
++++ b/electrobun.config.ts
+@@ -6,7 +6,8 @@ export default {
+   app: {
+     name: "toonflow",
+     identifier: "local.toonflow.desktop",
+-    version: process.env.appVersion ?? "2.0.0",
++    // ACT: 默认版本即本仓基线版本，与上游 tag 对齐（v2.0.6）；合并上游新版本时同步改这里，或临时用 appVersion=X.Y.Z 覆盖。
++    version: process.env.appVersion ?? "2.0.6",
+     urlSchemes: ["toonflow"],
+   },
+   build: {
 diff --git a/packages/assets/logo.ico b/packages/assets/logo.ico
 index c0b1ff5e591c69c71f44421b0063ec87e53221c5..0f879d73f4223df0236dc079dc7b8bc749ac79e8 100644
 GIT binary patch
