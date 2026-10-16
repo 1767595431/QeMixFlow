@@ -140,7 +140,7 @@ bun run build:desktop
 bun run package:desktop
 ```
 
-安装包输出到 `build/desktop/artifacts/toonflow-<版本>-Setup.exe`。
+安装包输出到 `build/desktop/artifacts/QeMixFlow-<版本>-Setup.exe`。
 
 **macOS**
 
@@ -212,7 +212,7 @@ git push --no-follow-tags origin refs/tags/v2.0.0:refs/tags/v2.0.0
 
 | 平台 | 安装包 | 更新文件 |
 | --- | --- | --- |
-| Windows x64 | `toonflow-<版本号>-Setup.exe` | `stable-win-x64-*` |
+| Windows x64 | `QeMixFlow-<版本号>-Setup.exe` | `stable-win-x64-*` |
 | macOS Intel | DMG | `stable-macos-x64-*` |
 | macOS Apple Silicon | DMG | `stable-macos-arm64-*` |
 

@@ -301,3 +301,46 @@ const autoInstallProviders = [tfRouter];
 - 应用图标源图 `qmix.png` 与公司 logo `YHQeMix.png` 都在仓库根目录；改图标后需重跑 `customization/buildAppIcon.ps1` 并**重建 PC 端**，ICO 是构建时嵌进 exe 的。
 - 引导页移除「登录 TF-Router 自动配置」按钮后，`openLogin`、`login` 视图与 `configureProviders` 已经没有入口，属于保留未删的上游死代码（没有再导出的其他引用）；要彻底精简可整块删除。
 - 火山引擎与可灵两个模板按各自公开 API 编写，**尚未用真实密钥验证**；首次接入时请用真机跑一次生成，确认模型 ID 与参数与你的账号权限一致。
+
+---
+
+## 七、打包与版本
+
+### 版本策略
+
+`electrobun.config.ts` 的 `app.version` 默认值就是**本仓基线版本**，当前为 `2.0.6`，与上游 tag 对齐；`package.json`、`apps/desktop/package.json` 上游本来就没有 `version` 字段，不另外增加，避免出现第二个真相来源。
+
+- 常规构建直接用默认值，产物名与内置版本自动是 `2.0.6`。
+- 临时构建别的版本号可用环境变量覆盖：`appVersion=2.0.7 bun run package:desktop`。
+- 合并上游新版本时，把这里的默认值一并改成对应的上游版本号，保持「功能同步、版本号同步」。
+- 该版本号会写进 exe 的 `version.json`、更新清单和 Web 构建里的 `import.meta.env.appVersion`，所以 dev 与安装包显示的版本一致。
+
+### 安装包
+
+```powershell
+bun run package:desktop
+```
+
+依次构建工具、节点、扩展、Web、MCP，再走 Electrobun 稳定通道，最后由 NSIS 打出安装包：
+
+- 产物：`build/desktop/artifacts/QeMixFlow-<版本>-Setup.exe`（安装向导、注册表显示名、快捷方式、桌面与开始菜单项都是 QeMixFlow）。
+- 命名定制：`apps/desktop/scripts/packageWindows.ts` 与 `apps/desktop/scripts/release.ts` 里的 `toonflow-<版本>-Setup.exe` 改成了 `QeMixFlow-<版本>-Setup.exe`，这是用户下载时唯一可见的文件名。Electrobun 内部的 tarball 与增量补丁仍保留 `toonflow-` 前缀，因为更新清单按原名互相引用，改名会破坏增量更新。
+- 前置条件：Electrobun 2.0.1 + NSIS（默认找 `C:/Program Files (x86)/NSIS/makensis.exe`，本机用 `NSIS_PATH=D:\Tools\NSIS\makensis.exe`）。首次打包会从 NuGet 与微软官网下载并验签 WebView2 SDK 与引导程序，缓存到 `build/desktop/nsis/`。
+
+> **打包环境坑**：在 Codex 自带的 PowerShell 7 里直接打包会失败——子进程继承的 `PSModulePath` 含 PS7 的模块目录，Electrobun 打包脚本调用的 `powershell.exe`（5.1）会去加载 PS7 版的 `Microsoft.PowerShell.Archive`，报 `Compress-Archive 不是可识别的命令`。打包前把 `PSModulePath` 设回 5.1 的值即可：
+>
+> ```powershell
+> $env:PSModulePath = 'C:\Users\<用户>\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules'
+> ```
+
+### 代码仓库
+
+定制版推送到自己的仓库，上游仓库只用于取新版本：
+
+```powershell
+git remote add qemixflow https://github.com/1767595431/QeMixFlow.git
+git push qemixflow HEAD:main
+```
+
+- `origin` 仍是上游 `HBAI-Ltd/Toonflow-app`（用于 `git fetch origin --tags` 取新版本）；`qemixflow` 是自己的仓库。
+- 不要用 `git push --tags` 推上游 tag：本机已 fetch 了上游全部 tag，标签名会跟自己的版本号撞车，需要发版时单独打。

@@ -6,7 +6,8 @@ export default {
   app: {
     name: "toonflow",
     identifier: "local.toonflow.desktop",
-    version: process.env.appVersion ?? "2.0.0",
+    // ACT: 默认版本即本仓基线版本，与上游 tag 对齐（v2.0.6）；合并上游新版本时同步改这里，或临时用 appVersion=X.Y.Z 覆盖。
+    version: process.env.appVersion ?? "2.0.6",
     urlSchemes: ["toonflow"],
   },
   build: {

@@ -13,7 +13,8 @@ const projectDir = realpathSync(resolve(import.meta.dirname, "../../.."));
 process.chdir(projectDir);
 const nsisDir = resolve("build/desktop/nsis");
 const artifactDir = resolve(desktopConfig.build.artifactFolder);
-const outputFile = join(artifactDir, `toonflow-${desktopConfig.app.version}-Setup.exe`);
+// ACT: 安装包文件名是用户下载时可见的品牌面，随定制改名；更新清单与增量补丁仍用 toonflow 前缀，不受影响。
+const outputFile = join(artifactDir, `QeMixFlow-${desktopConfig.app.version}-Setup.exe`);
 const installerDir = resolve("apps/desktop/installer");
 const appIcon = resolve("packages/assets/logo.ico");
 const makensis = process.env.NSIS_PATH ?? "C:/Program Files (x86)/NSIS/makensis.exe";
