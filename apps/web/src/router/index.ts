@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { useHelloStore } from "@/stores/hello";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -8,8 +7,8 @@ const router = createRouter({
       redirect: "/hello",
     },
     {
+      // ACT: 定制版每次启动都进入首次引导页，不再按 helloCompleted 跳过。
       path: "/hello",
-      beforeEnter: async () => await useHelloStore().load() ? { path: "/home", replace: true } : true,
       component: () => import("@/pages/hello/index.vue"),
     },
     {

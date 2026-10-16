@@ -1,9 +1,9 @@
 <template>
   <div class="about">
     <div class="brand">
-      <div class="brandMark"><img class="brandLogo" :src="logoUrl" alt="Toonflow Logo" /></div>
+      <div class="brandMark"><img class="brandLogo" :src="logoUrl" alt="YHQeMix Logo" /></div>
       <div class="brandInfo">
-        <h3>Toonflow</h3>
+        <h3>YHQeMix</h3>
         <div class="brandMeta">
           <span v-if="currentVersion">v{{ currentVersion }}</span>
           <el-tag v-if="clientBuild?.channel || snapshot?.channel" type="info" size="small" round>{{ clientBuild?.channel || snapshot?.channel }}</el-tag>
@@ -91,9 +91,9 @@
             bgColor="#ffffff"
             borderless
             role="img"
-            aria-label="Toonflow 交流群二维码" />
+            aria-label="YHQeMix 交流群二维码" />
           <div class="tips">
-            Toonflow 是为爱发电的开源项目。欢迎文明交流、友善反馈；回复可能需要一些时间，请避免责问或命令式沟通，感谢你的理解与尊重。
+            YHQeMix 是为爱发电的开源项目。欢迎文明交流、友善反馈；回复可能需要一些时间，请避免责问或命令式沟通，感谢你的理解与尊重。
           </div>
         </el-popover>
       </div>
@@ -116,7 +116,7 @@
             bgColor="#ffffff"
             borderless
             role="img"
-            aria-label="Toonflow 商务合作二维码" />
+            aria-label="YHQeMix 商务合作二维码" />
         </el-popover>
       </h3>
       <div v-if="sponsors.length" class="sponsorGrid" @keydown.esc="closeSponsor">
@@ -374,19 +374,16 @@ async function runUpdate(nextAction: "read" | "check" | "download" | "apply") {
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      width: 60px;
+      width: 128px;
       height: 60px;
+      padding: 0 10px;
       border-radius: calc(var(--ui-radius) * 1.5);
       background: var(--el-fill-color-light);
 
       .brandLogo {
-        width: 42px;
-        height: 42px;
+        width: 108px;
+        height: 27px;
         object-fit: contain;
-
-        .dark & {
-          filter: invert(1);
-        }
       }
     }
 

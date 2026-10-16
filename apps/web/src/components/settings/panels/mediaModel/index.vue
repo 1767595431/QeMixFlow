@@ -3,8 +3,9 @@
     <div class="itemList">
       <el-card v-for="item in sortedProviders" :key="item.fileName" class="providerItem" shadow="never">
         <div class="providerHeader">
-          <div v-if="item.icon || item.id.toLowerCase() === 'tfrouter'" class="providerMark" aria-hidden="true">
-            <img class="providerLogo" :class="{ monochrome: item.id.toLowerCase() === 'tfrouter' }" :src="item.icon || logoUrl" alt="" />
+          <!-- ACT: 定制版不给 TF-Router 加图标，仅展示供应商自带的图标。 -->
+          <div v-if="item.icon" class="providerMark" aria-hidden="true">
+            <img class="providerLogo" :src="item.icon" alt="" />
           </div>
           <div class="providerInfo">
             <div class="providerHeading">
@@ -45,7 +46,6 @@ import axios from "axios";
 import { computed, defineAsyncComponent, onMounted, onBeforeUnmount, ref, shallowRef, type Component } from "vue";
 import { ElMessage } from "element-plus";
 import { IconPlus, IconSettings, IconEdit, IconTrash, IconDownload } from "@tabler/icons-vue";
-import logoUrl from "@toonflow/assets/logo.svg";
 import type { MediaProvider } from "./types";
 import { settings, saveSettings } from "@/stores/settings";
 import { invalidateNodeModels } from "@toonflow/nodes-scaffold/nodeAi";

@@ -13,7 +13,8 @@ import initializePlugins from "@/utils/plugins/initialize";
 import { languageRequest, resolveRequestLocale, runWithLocale, setLocaleFallback, translateError, translateMessage } from "@/lib/i18n";
 import { detectLocale, normalizeLocale } from "@toonflow/i18n";
 
-const autoInstallProviders = ["tfRouter.ts", "apiMart.ts", "metaso.ts", "compshare.ts"];
+// ACT: 定制版只预装 TF-Router，其余媒体供应商（火山引擎/即梦/可灵）由用户在「设置 → 媒体模型」中添加。
+const autoInstallProviders = ["tfRouter.ts"];
 
 export async function createApp({
   webRoot,

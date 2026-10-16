@@ -6,11 +6,19 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
-import filmUrl from "@/assets/image.png";
+import helloArt1 from "@/assets/helloArt1.jpg";
+import helloArt2 from "@/assets/helloArt2.jpg";
+import helloArt3 from "@/assets/helloArt3.jpg";
 
 const filmCanvas = ref<HTMLCanvasElement>();
 let isReady = false;
 const frameDuration = 80;
+// ACT: 画格轮流展示三张剧照，间隔固定；不再使用精灵图逐帧播放。
+const artSources = [helloArt1, helloArt2, helloArt3];
+const artInterval = 8000;
+let artImages: HTMLImageElement[] = [];
+let artIndex = 0;
+let artTimer: ReturnType<typeof setInterval> | undefined;
 let image: HTMLImageElement;
 let context: CanvasRenderingContext2D | null = null;
 let resizeObserver: ResizeObserver;
@@ -18,7 +26,6 @@ let reducedMotion: MediaQueryList;
 let pauseTimer: ReturnType<typeof setTimeout> | undefined;
 let animationId = 0;
 let lastFrameTime = 0;
-let frameIndex = 0;
 let width = 0;
 let height = 0;
 let pixelRatio = 1;
@@ -34,16 +41,6 @@ const gateWear = Array.from({ length: 64 }, () => Math.random() * 1.8);
 let scratches: { x: number; top: number; bottom: number; life: number; light: boolean }[] = [];
 let dust: { x: number; y: number; size: number; fiber: boolean }[] = [];
 let splice: { y: number; life: number } | null = null;
-
-function getSourceRect(index: number) {
-  const column = index % 4;
-  const row = Math.floor(index / 4);
-  // 原图各行的地面分隔带不等高，按实际边界避开帧号和相邻画格。
-  const rowBounds = [[1, 126], [135, 262], [270, 391], [405, 528]][row]!;
-  const scaleY = image.naturalHeight / 538;
-  const cellWidth = image.naturalWidth / 4;
-  return [column * cellWidth + 1, rowBounds[0]! * scaleY, cellWidth - 2, (rowBounds[1]! - rowBounds[0]!) * scaleY] as const;
-}
 
 function ageFilm() {
   frameTick++;
@@ -76,7 +73,9 @@ function draw() {
   const ctx = context;
   ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-  const [sx, sy, sw, sh] = getSourceRect(frameIndex);
+  // ACT: 右侧改用单张剧照，不再按精灵图切帧；整图 cover 填满画格，超出的部分由画格裁掉。
+  const sw = image.naturalWidth;
+  const sh = image.naturalHeight;
   const filmWidth = Math.min(width * 0.94, height * 0.8 * (181 / 125));
   const filmHeight = filmWidth * (125 / 181);
   const x = (width - filmWidth) / 2;
@@ -84,7 +83,7 @@ function draw() {
   const railWidth = filmWidth * 0.06;
   const pictureX = railWidth;
   const pictureWidth = filmWidth - railWidth * 2;
-  const scale = Math.min(pictureWidth / sw, filmHeight / sh);
+  const scale = Math.max(pictureWidth / sw, filmHeight / sh);
 
   const glow = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height) * 0.62);
   glow.addColorStop(0, "#77766f");
@@ -122,8 +121,9 @@ function draw() {
     }
   }
 
-  ctx.filter = `grayscale(1) contrast(1.08) brightness(${exposure})`;
-  ctx.drawImage(image, sx, sy, sw, sh,
+  // ACT: 剧照保留原色，只保留轻微对比与曝光闪烁来维持胶片感。
+  ctx.filter = `contrast(1.08) brightness(${exposure})`;
+  ctx.drawImage(image, 0, 0, sw, sh,
     pictureX + (pictureWidth - sw * scale) / 2,
     (filmHeight - sh * scale) / 2, sw * scale, sh * scale);
   ctx.filter = "none";
@@ -228,7 +228,6 @@ function pause() {
 function tick(time: number) {
   if (time - lastFrameTime >= frameDuration) {
     lastFrameTime = time - (time - lastFrameTime) % frameDuration;
-    frameIndex = (frameIndex + 1) % 16;
     ageFilm();
     draw();
   }
@@ -277,13 +276,24 @@ onMounted(() => {
     const pattern = context.createPattern(tile, "repeat");
     if (pattern) grains.push(pattern);
   }
-  image = new Image();
-  image.onload = () => {
+  artImages = artSources.map(source => {
+    const item = new Image();
+    item.src = source;
+    return item;
+  });
+  void Promise.all(artImages.map(item => item.decode().catch(() => undefined))).then(() => {
+    image = artImages[0]!;
     ageFilm();
     resize();
     isReady = true;
-  };
-  image.src = filmUrl;
+    play();
+    artTimer = setInterval(() => {
+      artIndex = (artIndex + 1) % artImages.length;
+      image = artImages[artIndex]!;
+      ageFilm();
+      draw();
+    }, artInterval);
+  });
   resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(canvas);
   window.addEventListener("mousemove", play, { passive: true });
@@ -294,8 +304,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   pause();
+  clearInterval(artTimer);
   resizeObserver?.disconnect();
-  if (image) image.onload = null;
   window.removeEventListener("mousemove", play);
   window.removeEventListener("blur", pause);
   document.removeEventListener("visibilitychange", pause);

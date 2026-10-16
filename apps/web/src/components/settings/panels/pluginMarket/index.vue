@@ -7,12 +7,6 @@
         <button class="navButton" type="button" :aria-pressed="activeTab === 'ffmpeg'" @click="activeTab = 'ffmpeg'">FFmpeg</button>
       </nav>
       <div class="marketActions">
-        <el-button tag="a" href="https://api.toonflow.net/console/plugIn" target="_blank" rel="noopener noreferrer" size="small" text :icon="IconExternalLink">
-          网页版市场
-        </el-button>
-        <el-button tag="a" href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd" target="_blank" rel="noopener noreferrer" size="small" text :icon="IconBook">
-          开发者文档
-        </el-button>
         <template v-if="activeTab === 'installed'">
           <el-button v-if="selectedType === 'ext' || selectedType === 'all'" size="small" :icon="IconSettings" @click="associationsVisible = true">默认打开方式</el-button>
           <el-button size="small" type="primary" :icon="IconUpload" :loading="installing" aria-label="安装本地插件" @click="pluginFileInput?.click()">

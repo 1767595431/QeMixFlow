@@ -8,7 +8,7 @@
               <div class="welcomeHeader">
                 <span class="welcomeIcon" aria-hidden="true"><span class="welcomeLogo" :style="{ maskImage: `url(${logoUrl})` }" /></span>
                 <div>
-                  <p class="welcomeLabel">你好，我是 Toonflow 助手</p>
+                  <p class="welcomeLabel">你好，我是 YHQeMix 助手</p>
                   <h3>从一个想法开始</h3>
                 </div>
               </div>
@@ -971,15 +971,15 @@ watch(() => !props.initialSession?.parentFile && !!workspaceStore.pendingAgentMe
           display: grid;
           place-items: center;
           flex-shrink: 0;
-          width: 42px;
+          width: 86px;
           height: 42px;
           border-radius: var(--ui-radius-large);
           background: var(--el-color-primary-light-9);
           color: var(--el-color-primary);
 
           .welcomeLogo {
-            width: 28px;
-            height: 28px;
+            width: 68px;
+            height: 18px;
             background: currentColor;
             mask-size: contain;
             mask-position: center;

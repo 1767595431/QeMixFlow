@@ -30,10 +30,6 @@
         <h1 id="welcomeTitle">快速开始</h1>
         <p class="description">选择登录TF-Router可直接自动配置，无需任何复杂操作，即可开始创作。</p>
 
-        <el-button class="loginButton" type="primary" @click="openLogin">
-          <icon-login class="buttonIcon" />
-          登录 TF-Router 自动配置
-        </el-button>
         <el-button class="mobileConnectButton" :type="deviceHubEnabled ? 'success' : undefined" :plain="deviceHubEnabled" :icon="deviceHubEnabled || mobileConnection.mode === 'remote' ? IconDeviceDesktop : IconQrcode" @click="mobileConnectVisible = true">{{ mobileConnectionLabel }}</el-button>
         <div class="secondaryActions">
           <el-button class="secondaryButton" round @click="view = 'custom'">
@@ -45,16 +41,9 @@
         </div>
       </div>
 
-      <footer class="pageFooter">
-        <p>© {{ new Date().getFullYear() }} Toonflow · 保留所有权利。</p>
-      </footer>
     </section>
     <div class="artPanel" aria-hidden="true">
       <bg class="artBg" />
-      <div class="artBrand">
-        <span class="artLogo" v-html="logoSvg" />
-        <span class="artName">Toonflow</span>
-      </div>
     </div>
     <mobileConnect v-model="mobileConnectVisible" />
   </main>
@@ -73,7 +62,6 @@ import { customProviders, saveSettings } from "@/stores/settings";
 import type { MediaProvider } from "@/components/settings/panels/mediaModel/types";
 import { useHelloStore } from "@/stores/hello";
 import anonymousData from "@/lib/anonymousData";
-import logoSvg from "@toonflow/assets/logo.svg?raw";
 import bg from "./bg.vue";
 import languageSelect from "@/components/languageSelect.vue";
 import { deviceHubEnabled, mobileConnection, mobileConnectionLabel } from "@/lib/mobile";
@@ -311,17 +299,6 @@ onBeforeUnmount(() => {
         margin-inline-end: 8px;
       }
 
-      .loginButton {
-        width: 100%;
-        height: auto;
-        min-height: 50px;
-        padding: 12px;
-        white-space: normal;
-        border-radius: calc(var(--ui-radius) * 1.625);
-        font-size: 16px;
-        font-weight: 600;
-      }
-
       .secondaryActions {
         display: flex;
         flex-wrap: wrap;
@@ -348,17 +325,6 @@ onBeforeUnmount(() => {
       .mobileConnectButton { width: 100%; margin: 12px 0 0; min-height: 42px; }
     }
 
-    .pageFooter {
-      grid-row: 3;
-      align-self: end;
-      color: var(--el-text-color-secondary);
-      font-size: 12px;
-
-      p {
-        margin: 10px 0 0;
-        line-height: 1.6;
-      }
-    }
   }
 
   &.configuring {
@@ -370,20 +336,12 @@ onBeforeUnmount(() => {
       grid-template-rows: minmax(0, 1fr) auto;
       gap: 24px;
       min-height: 0;
-
-      .pageFooter {
-        grid-row: 2;
-      }
     }
   }
 
   .artPanel {
     position: relative;
     min-width: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 28px;
     border-radius: calc(var(--ui-radius) * 1.125);
     overflow: hidden;
     background: radial-gradient(ellipse at 76% 82%, #f3dcb1 0%, transparent 46%), radial-gradient(ellipse at 25% 52%, #667ab5 0%, transparent 52%),
@@ -391,37 +349,6 @@ onBeforeUnmount(() => {
 
     .artBg {
       z-index: 0;
-    }
-
-    .artBrand {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #fff;
-
-      .artLogo {
-        width: 44px;
-        height: 44px;
-        line-height: 0;
-
-        :deep(svg) {
-          display: block;
-          width: 100%;
-          height: 100%;
-        }
-
-        :deep(path) {
-          fill: #fff;
-        }
-      }
-
-      .artName {
-        font-size: 30px;
-        font-weight: 600;
-        letter-spacing: 0.4px;
-      }
     }
   }
 

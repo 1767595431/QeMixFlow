@@ -11,9 +11,13 @@
     "./types": "./types.d.ts",
     "./language/tfRouter": "./src/language/tfRouter.ts",
     "./language/deepSeek": "./src/language/deepSeek.ts",
+    "./language/qwen": "./src/language/qwen.ts",
     "./media/tfRouter": "./src/media/tfRouter.ts",
     "./media/apiMart": "./src/media/apiMart.ts",
     "./media/metaso": "./src/media/metaso.ts",
-    "./media/compshare": "./src/media/compshare.ts"
+    "./media/compshare": "./src/media/compshare.ts",
+    "./media/volcengine": "./src/media/volcengine.ts",
+    "./media/jimeng": "./src/media/jimeng.ts",
+    "./media/kling": "./src/media/kling.ts"
   }
 }

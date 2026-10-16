@@ -8,6 +8,7 @@ import type { desktopUpdateAttempt } from "@/types/desktop";
 import type { MobileLinkConfig } from "@/utils/mobileLink";
 import { normalizeNodeMenu, serializeNodeMenu } from "@/lib/nodeMenu";
 
+// ACT: 定制版只预装 TF-Router，其余文本供应商（DeepSeek/通义千问）由用户在「设置 → 文本模型」中添加。
 const autoInstallProviders = [tfRouter];
 const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? resolve(import.meta.dirname, "../../../../../data");
 mkdirSync(dataDirectory, { recursive: true });

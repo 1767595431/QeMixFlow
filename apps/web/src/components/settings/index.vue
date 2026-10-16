@@ -84,7 +84,6 @@ const settingsPanels = [
   },
   { id: "privacy", label: "隐私", icon: IconShieldLock, component: defineAsyncComponent(() => import("./panels/privacy.vue")) },
   { id: "developer", label: "开发者选项", icon: IconCode, component: defineAsyncComponent(() => import("./panels/developer/index.vue")) },
-  { id: "about", label: "关于", icon: IconInfoCircle, component: defineAsyncComponent(() => import("./panels/about.vue")) },
 ];
 const activePanel = shallowRef(settingsPanels[0]!);
 const visible = defineModel<boolean>({ default: false });

@@ -3,8 +3,9 @@
     <div class="itemList">
       <el-card v-for="item in sortedProviders" :key="item.id" class="providerItem" shadow="never">
         <div class="providerHeader">
-          <div v-if="item.icon || isTfRouterProvider(item)" class="providerMark" aria-hidden="true">
-            <img class="providerLogo" :class="{ monochrome: isTfRouterProvider(item) }" :src="item.icon || logoUrl" alt="" />
+          <!-- ACT: 定制版不给 TF-Router 加图标，仅展示供应商自带的图标。 -->
+          <div v-if="item.icon" class="providerMark" aria-hidden="true">
+            <img class="providerLogo" :src="item.icon" alt="" />
           </div>
           <div class="providerInfo">
             <div class="providerHeading">
@@ -46,7 +47,6 @@ import { ElMessage } from "element-plus";
 import { customProviders, saveSettings, type CustomProvider } from "@/stores/settings";
 import { IconPlus, IconSettings, IconEdit, IconTrash, IconRefresh } from "@tabler/icons-vue";
 import { languageProviders } from "@toonflow/providers";
-import logoUrl from "@toonflow/assets/logo.svg";
 import tfAccount from "../../tfAccount.vue";
 import { isTfRouterProvider } from "@/lib/tf";
 
