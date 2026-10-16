@@ -41507,37 +41507,62 @@ zO*PFPZ5#-)K@;duqrfkPSgGxZlcrb%U>m8)h+{;PkrRhsGsyxS9)f6UGXf^Q+BV*J
 s<NpBw0RR6NI_rl3000I_L_t&o0GT_&aQEE{!2kdN07*qoM6N<$g87wtLI3~&
 
 diff --git a/apps/web/src/components/agent/conversation.vue b/apps/web/src/components/agent/conversation.vue
-index 22f4f4dc0c40aa846d4eecef9d2632e4397efbb9..957b3fa411ec45eca0dafbdc8454458054a68faf 100644
+index 22f4f4dc0c40aa846d4eecef9d2632e4397efbb9..3b30ce8a90fd0c95bbad46a8ca3e0d8c210675bf 100644
 --- a/apps/web/src/components/agent/conversation.vue
 +++ b/apps/web/src/components/agent/conversation.vue
-@@ -8,7 +8,7 @@
+@@ -6,11 +6,8 @@
+           <template #content>
+             <section class="welcomeMessage" aria-label="开始新对话">
                <div class="welcomeHeader">
-                 <span class="welcomeIcon" aria-hidden="true"><span class="welcomeLogo" :style="{ maskImage: `url(${logoUrl})` }" /></span>
-                 <div>
+-                <span class="welcomeIcon" aria-hidden="true"><span class="welcomeLogo" :style="{ maskImage: `url(${logoUrl})` }" /></span>
+-                <div>
 -                  <p class="welcomeLabel">你好，我是 Toonflow 助手</p>
-+                  <p class="welcomeLabel">你好，我是 QeMixFlow 助手</p>
-                   <h3>从一个想法开始</h3>
-                 </div>
+-                  <h3>从一个想法开始</h3>
+-                </div>
++                <p class="welcomeLabel">你好，我是 QeMixFlow 助手</p>
++                <h3>从一个想法开始</h3>
                </div>
-@@ -971,15 +971,15 @@ watch(() => !props.initialSession?.parentFile && !!workspaceStore.pendingAgentMe
-           display: grid;
-           place-items: center;
-           flex-shrink: 0;
--          width: 42px;
-+          width: 86px;
-           height: 42px;
-           border-radius: var(--ui-radius-large);
-           background: var(--el-color-primary-light-9);
-           color: var(--el-color-primary);
+               <p class="welcomeDescription">聊聊你的故事、画面或镜头，让我们一起把想法落到画布上。</p>
+               <div class="welcomeSuggestions">
+@@ -171,7 +168,6 @@ import {
+ } from "@tabler/icons-vue";
+ import { ElMessage } from "element-plus";
+ import { getReadableFileExtension, getReadableFileMimeType, readableFileAccept } from "@toonflow/server/documentFormats";
+-import logoUrl from "@toonflow/assets/logo.svg";
+ import modelPopover from "@/components/modelPopover.vue";
+ import skillMenu from "./skillMenu.vue";
+ import mentionMenu from "./mentionMenu.vue";
+@@ -963,30 +959,6 @@ watch(() => !props.initialSession?.parentFile && !!workspaceStore.pendingAgentMe
+       color: var(--el-text-color-primary);
  
-           .welcomeLogo {
+       .welcomeHeader {
+-        display: flex;
+-        align-items: center;
+-        gap: 12px;
+-
+-        .welcomeIcon {
+-          display: grid;
+-          place-items: center;
+-          flex-shrink: 0;
+-          width: 42px;
+-          height: 42px;
+-          border-radius: var(--ui-radius-large);
+-          background: var(--el-color-primary-light-9);
+-          color: var(--el-color-primary);
+-
+-          .welcomeLogo {
 -            width: 28px;
 -            height: 28px;
-+            width: 68px;
-+            height: 18px;
-             background: currentColor;
-             mask-size: contain;
-             mask-position: center;
+-            background: currentColor;
+-            mask-size: contain;
+-            mask-position: center;
+-            mask-repeat: no-repeat;
+-          }
+-        }
+-
+         .welcomeLabel { margin: 0 0 4px; font-size: 12px; color: var(--el-text-color-secondary); }
+         h3 { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.4; }
+       }
 diff --git a/apps/web/src/components/mobileConnect.vue b/apps/web/src/components/mobileConnect.vue
 index a25e922f3f9839b4581760f30a7f57be7e2e8f84..673f42e1a396933c4218aed60f1deaf503d62be6 100644
 --- a/apps/web/src/components/mobileConnect.vue

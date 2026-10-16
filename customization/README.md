@@ -200,6 +200,12 @@ const autoInstallProviders = [tfRouter];
 
 > 「开始创作」与下方原有的次要按钮「稍后配置」调用同一个方法，区别只在视觉主次：「添加私有提供商」进 `custom` 配置视图，两个直接开始的入口都是跳过配置先进入主页（与上游「稍后配置」的行为一致）。
 
+### 15. Agent 新对话欢迎区去掉 logo
+
+`apps/web/src/components/agent/conversation.vue`：欢迎块左侧的品牌图标（`.welcomeIcon` / `.welcomeLogo`，用 `logoUrl` 做 mask）连同 `logoUrl` 导入与两个样式类一起删除，「你好，我是 QeMixFlow 助手」「从一个想法开始」两行文字与下方说明、建议按钮保持原样。
+
+> 删除后 `.welcomeHeader` 里只剩文字，`display: flex` 的居中布局与 86×42 图标容器一并移除。
+
 ---
 
 ## 四、运行时数据清理

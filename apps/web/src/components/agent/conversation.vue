@@ -6,11 +6,8 @@
           <template #content>
             <section class="welcomeMessage" aria-label="开始新对话">
               <div class="welcomeHeader">
-                <span class="welcomeIcon" aria-hidden="true"><span class="welcomeLogo" :style="{ maskImage: `url(${logoUrl})` }" /></span>
-                <div>
-                  <p class="welcomeLabel">你好，我是 QeMixFlow 助手</p>
-                  <h3>从一个想法开始</h3>
-                </div>
+                <p class="welcomeLabel">你好，我是 QeMixFlow 助手</p>
+                <h3>从一个想法开始</h3>
               </div>
               <p class="welcomeDescription">聊聊你的故事、画面或镜头，让我们一起把想法落到画布上。</p>
               <div class="welcomeSuggestions">
@@ -171,7 +168,6 @@ import {
 } from "@tabler/icons-vue";
 import { ElMessage } from "element-plus";
 import { getReadableFileExtension, getReadableFileMimeType, readableFileAccept } from "@toonflow/server/documentFormats";
-import logoUrl from "@toonflow/assets/logo.svg";
 import modelPopover from "@/components/modelPopover.vue";
 import skillMenu from "./skillMenu.vue";
 import mentionMenu from "./mentionMenu.vue";
@@ -963,30 +959,6 @@ watch(() => !props.initialSession?.parentFile && !!workspaceStore.pendingAgentMe
       color: var(--el-text-color-primary);
 
       .welcomeHeader {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-
-        .welcomeIcon {
-          display: grid;
-          place-items: center;
-          flex-shrink: 0;
-          width: 86px;
-          height: 42px;
-          border-radius: var(--ui-radius-large);
-          background: var(--el-color-primary-light-9);
-          color: var(--el-color-primary);
-
-          .welcomeLogo {
-            width: 68px;
-            height: 18px;
-            background: currentColor;
-            mask-size: contain;
-            mask-position: center;
-            mask-repeat: no-repeat;
-          }
-        }
-
         .welcomeLabel { margin: 0 0 4px; font-size: 12px; color: var(--el-text-color-secondary); }
         h3 { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.4; }
       }
