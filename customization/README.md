@@ -1,4 +1,4 @@
-# YHQeMix 定制改动记录
+# QeMixFlow 定制改动记录
 
 本目录记录本项目相对上游 Toonflow 源码所做的**全部定制改动**。上游发布新版本、需要重新拉取源码并重新编译时，按本文末尾「版本更新后如何沿用」操作，即可保留这些改动。
 
@@ -6,9 +6,13 @@
 
 ---
 
-## 一、品牌替换：Toonflow → YHQeMix
+## 一、品牌替换：Toonflow → QeMixFlow
 
 只替换**用户可见的品牌文案**，内部标识一律保留（见本节末尾）。
+
+> **品牌更名历程**：上游 `Toonflow` → 定制占位 `YHQeMix` → 定名 **QeMixFlow**。
+> 公司 logo 文件名仍是 `YHQeMix.png`（未改名），产品名是 `QeMixFlow`，两者是「公司品牌 + 产品名」的关系。
+> `customization/applyBrand.ps1` 已把 `Toonflow` 与 `YHQeMix` 两种写法一并归一到 `QeMixFlow`，以后合并上游跑一遍即可。
 
 ### 涉及范围
 
@@ -23,7 +27,7 @@
 ### 替换规则
 
 ```
-(?<![/@A-Za-z0-9_])Toonflow(?!\/2\.0)   →   YHQeMix
+(?<![/@A-Za-z0-9_])Toonflow(?!\/2\.0)   →   QeMixFlow
 ```
 
 - 前置排除 `[/@A-Za-z0-9_]`：避免改到 `HBAI-Ltd/Toonflow-app`、`@toonflow/*`、`dockviewToonflow`。
@@ -41,17 +45,19 @@
 
 ---
 
-## 二、图标替换：YHQeMix.png
+## 二、公司 logo（界面）与应用图标（exe）
+
+### 界面里的公司 logo：`YHQeMix.png`
 
 源图：项目根目录 `YHQeMix.png`（328×80，横向文字 logo，32 位带透明通道）。
 
-### 做法
+#### 做法
 
 - `packages/assets/logo.png`：`YHQeMix.png` 的副本。
 - `packages/assets/logo.svg`：**改写为内嵌该 PNG 的 SVG**（`<image href="data:image/png;base64,...">`，`viewBox="0 0 328 80"`，`preserveAspectRatio="xMidYMid meet"`）。
   这样 8 处按 `@toonflow/assets/logo.svg` 引用 logo 的代码**无需逐个改 import** 即可生效，包括 hello 页用 `?raw` 注入 SVG 的写法。
 
-### 连带调整
+#### 连带调整
 
 - 删除 4 处暗色模式反色 `filter: invert(1)`：原用于把纯黑 logo 反成白色，套在彩色 logo 上会得到错误颜色。
   位置：`apps/web/src/pages/home/index.vue`、`apps/web/src/components/settings/panels/about.vue`、`apps/web/src/components/settings/providerList.scss`、`.../languageModel/addProviderDialog.vue`、`.../mediaModel/addCustomProviderDialog.vue`。
@@ -66,7 +72,16 @@
 
 - 供应商列表里 TF-Router 行前面的图标已去掉：删除 `languageModel/index.vue`、`mediaModel/index.vue` 中的 `.providerMark` 标记块及其 `logoUrl` 导入，并移除 `providerList.scss` 里对应的 `.providerMark` / `.providerLogo` 样式。
 
-> 桌面端 exe / 任务栏图标 `packages/assets/logo.ico` 与 macOS `logo.iconset/` **未替换**，仍为原图；需要时另行生成。
+### 应用图标：`qmix.png`
+
+源图：项目根目录 `qmix.png`（105×80 的 Y+H 品牌标记，白底、非透明）。
+
+- 生成脚本：`customization/buildAppIcon.ps1`——取源图四角颜色作底色，把标记居中放到正方形画布（左右留 14% 边距），再输出多尺寸 ICO 与 iconset。
+- 产物：
+  - `packages/assets/logo.ico`：含 16/24/32/48/64/128/256 七个尺寸，被 `electrobun.config.ts` 的 `win.icon` 与 `apps/desktop/scripts/packageWindows.ts` 使用。
+  - `packages/assets/logo.iconset/icon_*.png`：10 个尺寸，供 macOS 打包，以及 Android（`apps/mobile/scripts/build.ts`）与鸿蒙（`compat/ohos/build.ts`）取用 `icon_512x512.png`。
+- **已知限制**：源图只有 105×80，任务栏/安装包常用的 16~48px 清晰，128px 以上是放大结果、会偏软。换一张 1024×1024（或 SVG）的源图重跑脚本即可提升。
+- 项目根目录另有一张 2048×2048 的 `短剧无限画布应用图标.jpeg`（右下角带「豆包AI生成」水印），当前未使用；若要改用它，需要先裁掉水印。
 
 ---
 
@@ -74,7 +89,7 @@
 
 ### 1. 首页图标后面不再显示文字
 
-`apps/web/src/pages/home/index.vue`：删除 `<h1>YHQeMix</h1>`、`.brand` 的 `gap` 以及对应 `h1` 样式。
+`apps/web/src/pages/home/index.vue`：删除 `<h1>QeMixFlow</h1>`、`.brand` 的 `gap` 以及对应 `h1` 样式。
 
 ### 2. 媒体模型只预装 TF-Router
 
@@ -172,6 +187,12 @@ const autoInstallProviders = [tfRouter];
 `apps/web/src/pages/hello/index.vue`：把「选择登录TF-Router可直接自动配置，无需任何复杂操作，即可开始创作。」改为「请自行配置，无需任何复杂操作，即可开始创作。」（与「登录 TF-Router 自动配置」按钮已移除保持一致）。
 
 > 该句以中文原文作为 i18n 键，改后其他语言没有对应译文，会回退显示这句中文。
+
+### 13. 引导页显示公司 logo
+
+`apps/web/src/pages/hello/index.vue`：在「快速开始」标题上方居中显示公司 logo（复用 `@toonflow/assets/logo.svg`，宽 168px）。
+
+> 位置按需求定在左侧文字面板内，不覆盖右侧剧照——右侧仍保持「不加文字和图片」。
 
 ---
 

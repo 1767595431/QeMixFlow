@@ -11,7 +11,7 @@
     <el-main class="pageContent">
       <section class="creationPanel" aria-label="创建项目">
         <div class="brand">
-          <el-image class="brandLogo" :src="logoUrl" fit="contain" alt="YHQeMix" />
+          <el-image class="brandLogo" :src="logoUrl" fit="contain" alt="QeMixFlow" />
         </div>
         <div class="promptArea">
           <span class="arrowHint inspirationHint">

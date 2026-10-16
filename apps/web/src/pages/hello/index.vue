@@ -27,6 +27,7 @@
         </el-button>
       </div>
       <div v-else class="welcomeContent">
+        <img class="companyLogo" :src="companyLogo" alt="" />
         <h1 id="welcomeTitle">快速开始</h1>
         <p class="description">请自行配置，无需任何复杂操作，即可开始创作。</p>
 
@@ -60,6 +61,7 @@ import { customProviders, saveSettings } from "@/stores/settings";
 import type { MediaProvider } from "@/components/settings/panels/mediaModel/types";
 import { useHelloStore } from "@/stores/hello";
 import anonymousData from "@/lib/anonymousData";
+import companyLogo from "@toonflow/assets/logo.svg";
 import bg from "./bg.vue";
 import languageSelect from "@/components/languageSelect.vue";
 
@@ -212,6 +214,7 @@ onBeforeUnmount(() => {
   }
 
   .welcomePanel {
+    position: relative;
     display: grid;
     grid-template-rows: 1fr auto 1fr;
     gap: 32px;
@@ -272,6 +275,13 @@ onBeforeUnmount(() => {
       width: 100%;
       max-width: 420px;
       text-align: center;
+
+      .companyLogo {
+        display: block;
+        width: 168px;
+        height: auto;
+        margin: 0 auto 22px;
+      }
 
       h1 {
         margin: 0 0 12px;

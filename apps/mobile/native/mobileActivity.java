@@ -98,11 +98,11 @@ public class mobileActivity extends Activity {
   private boolean failed;
   private String browserStage = "waiting";
   private String systemMissing = "";
-  private final Runnable browserTimeout = () -> showError("浏览器启动超时。请完全退出并重新打开 YHQeMix。" + (systemMissing.isEmpty() ? "" : "\n系统 WebView 缺少：" + systemMissing), null);
+  private final Runnable browserTimeout = () -> showError("浏览器启动超时。请完全退出并重新打开 QeMixFlow。" + (systemMissing.isEmpty() ? "" : "\n系统 WebView 缺少：" + systemMissing), null);
   private final Runnable startupTimeout = () -> {
     synchronized (processLock) {
       if (stopping || failed || localOrigin != null || bunProcess == null || !bunProcess.isAlive()) return;
-      showError("Bun 启动超时（60 秒）。请通过 Logcat 查看 YHQeMixMobile 日志。", null);
+      showError("Bun 启动超时（60 秒）。请通过 Logcat 查看 QeMixFlowMobile 日志。", null);
       stopBun();
     }
   };
@@ -131,7 +131,7 @@ public class mobileActivity extends Activity {
     root.addView(statusView, new FrameLayout.LayoutParams(-1, -1));
     progressView = new ProgressBar(this);
     progressView.setIndeterminateTintList(ColorStateList.valueOf(Color.rgb(64, 158, 255)));
-    progressView.setContentDescription("Loading YHQeMix");
+    progressView.setContentDescription("Loading QeMixFlow");
     int progressSize = (int) (32 * getResources().getDisplayMetrics().density);
     root.addView(progressView, new FrameLayout.LayoutParams(progressSize, progressSize, Gravity.CENTER));
     setContentView(root);
@@ -205,7 +205,7 @@ public class mobileActivity extends Activity {
       root.addView(webView, 0, new FrameLayout.LayoutParams(-1, -1));
     } catch (RuntimeException | LinkageError error) {
       systemMissing = "系统 WebView 无法初始化";
-      Log.w("YHQeMixMobile", systemMissing, error);
+      Log.w("QeMixFlowMobile", systemMissing, error);
       if (webView != null) webView.destroy();
       webView = null;
     }
@@ -285,7 +285,7 @@ public class mobileActivity extends Activity {
     } catch (RuntimeException error) {
       cameraPermissionPending = false;
       finishCamera(false);
-      Log.w("YHQeMixMobile", "Unable to request camera permission", error);
+      Log.w("QeMixFlowMobile", "Unable to request camera permission", error);
     }
   }
 
@@ -335,9 +335,9 @@ public class mobileActivity extends Activity {
         });
       } catch (InterruptedException error) {
         Thread.currentThread().interrupt();
-        showError("Unable to restart YHQeMix: interrupted while stopping Bun.", error);
+        showError("Unable to restart QeMixFlow: interrupted while stopping Bun.", error);
       } catch (IOException error) {
-        showError("Unable to restart YHQeMix: " + error.getMessage(), error);
+        showError("Unable to restart QeMixFlow: " + error.getMessage(), error);
       }
     }, "mobileRestart").start();
   }
@@ -380,7 +380,7 @@ public class mobileActivity extends Activity {
         browserProbed(new JSONObject((String) decoded), false);
       } catch (Exception error) {
         systemMissing = "系统 WebView 无法完成能力检测";
-        Log.w("YHQeMixMobile", systemMissing, error);
+        Log.w("QeMixFlowMobile", systemMissing, error);
         startGecko();
       }
     });
@@ -399,16 +399,16 @@ public class mobileActivity extends Activity {
     }
     mainHandler.removeCallbacks(browserTimeout);
     if (missing.length() > 0) {
-      if (gecko) showError("内置 GeckoView 缺少所需能力：" + names + "。请更新 YHQeMix。\n系统 WebView 缺少：" + systemMissing, null);
+      if (gecko) showError("内置 GeckoView 缺少所需能力：" + names + "。请更新 QeMixFlow。\n系统 WebView 缺少：" + systemMissing, null);
       else {
         systemMissing = names.toString();
-        Log.w("YHQeMixMobile", "System WebView missing: " + systemMissing);
+        Log.w("QeMixFlowMobile", "System WebView missing: " + systemMissing);
         startGecko();
       }
       return;
     }
     browserStage = "page";
-    Log.i("YHQeMixMobile", (gecko ? "GeckoView" : "System WebView") + " capability check passed: " + result.getString("userAgent"));
+    Log.i("QeMixFlowMobile", (gecko ? "GeckoView" : "System WebView") + " capability check passed: " + result.getString("userAgent"));
     mainHandler.postDelayed(browserTimeout, 30000);
     loadBrowserUrl("http://127.0.0.1:" + localOrigin.getPort() + "/?mobile=1" + (gecko ? "&engine=gecko" : ""));
   }
@@ -478,10 +478,10 @@ public class mobileActivity extends Activity {
       });
       geckoSession.setContentDelegate(new GeckoSession.ContentDelegate() {
         @Override
-        public void onCrash(GeckoSession session) { showError("GeckoView 渲染进程已崩溃。请完全退出并重新打开 YHQeMix。", null); }
+        public void onCrash(GeckoSession session) { showError("GeckoView 渲染进程已崩溃。请完全退出并重新打开 QeMixFlow。", null); }
 
         @Override
-        public void onKill(GeckoSession session) { showError("GeckoView 渲染进程被系统终止。请释放内存后重新打开 YHQeMix。", null); }
+        public void onKill(GeckoSession session) { showError("GeckoView 渲染进程被系统终止。请释放内存后重新打开 QeMixFlow。", null); }
       });
       geckoSession.setPermissionDelegate(new GeckoSession.PermissionDelegate() {
         @Override
@@ -567,7 +567,7 @@ public class mobileActivity extends Activity {
         loadBrowserUrl(localOrigin.buildUpon().appendQueryParameter("probe", "1").appendQueryParameter("engine", "gecko").build().toString());
       }, error -> showError("无法初始化 GeckoView 原生通信：" + error.getMessage(), new IOException(error)));
     } catch (RuntimeException | LinkageError error) {
-      showError("无法启用内置 GeckoView：" + error.getMessage() + "。请更新 YHQeMix 或系统 WebView。\n系统 WebView 缺少：" + systemMissing, new IOException(error));
+      showError("无法启用内置 GeckoView：" + error.getMessage() + "。请更新 QeMixFlow 或系统 WebView。\n系统 WebView 缺少：" + systemMissing, new IOException(error));
     }
   }
 
@@ -609,7 +609,7 @@ public class mobileActivity extends Activity {
           result.complete(stopping || failed || !isLocalPage() ? prompt.dismiss() : prompt.confirm(this, selected));
         });
       } catch (IOException | RuntimeException error) {
-        Log.w("YHQeMixMobile", "读取导入文件失败", error);
+        Log.w("QeMixFlowMobile", "读取导入文件失败", error);
         mainHandler.post(() -> {
           if (prompt.isComplete()) return;
           result.complete(prompt.dismiss());
@@ -617,7 +617,7 @@ public class mobileActivity extends Activity {
         });
       } finally {
         if (stopping) try { removeProgramDirectory(uploadDirectory); }
-        catch (IOException error) { Log.w("YHQeMixMobile", "清理文件缓存失败", error); }
+        catch (IOException error) { Log.w("QeMixFlowMobile", "清理文件缓存失败", error); }
       }
     }, "mobileImport").start();
   }
@@ -654,7 +654,7 @@ public class mobileActivity extends Activity {
           String line;
           while ((line = reader.readLine()) != null) {
             if (!line.startsWith("TOONFLOW_MOBILE_URL=")) {
-              Log.i("YHQeMixMobile", line);
+              Log.i("QeMixFlowMobile", line);
               // 压缩源码上下文保留在 Logcat，避免淹没错误页面中的原因与堆栈。
               if (line.matches("^\\s*\\d+\\s*\\|.*")) continue;
               synchronized (outputTail) {
@@ -673,7 +673,7 @@ public class mobileActivity extends Activity {
               if (stopping || localOrigin != null || !process.isAlive()) continue;
               localOrigin = url;
               mainHandler.removeCallbacks(startupTimeout);
-              Log.i("YHQeMixMobile", "Bun ready on port " + url.getPort());
+              Log.i("QeMixFlowMobile", "Bun ready on port " + url.getPort());
               mainHandler.post(() -> {
                 synchronized (processLock) {
                   if (!stopping && !failed && process.isAlive()) probeBrowser();
@@ -697,7 +697,7 @@ public class mobileActivity extends Activity {
         try { readerThread.join(200); } catch (InterruptedException error) { Thread.currentThread().interrupt(); }
         String output;
         synchronized (outputTail) { output = outputTail.toString().trim(); }
-        showError("Bun 已退出，退出码：" + exitCode + (output.isEmpty() ? "。请通过 Logcat 查看 YHQeMixMobile 日志。" : "\n\n" + output), null);
+        showError("Bun 已退出，退出码：" + exitCode + (output.isEmpty() ? "。请通过 Logcat 查看 QeMixFlowMobile 日志。" : "\n\n" + output), null);
       }
     } catch (Exception error) {
       if (!stopping) showError("无法启动本地 Bun 服务：" + error.getMessage(), error);
@@ -827,16 +827,16 @@ public class mobileActivity extends Activity {
           } finally { connection.disconnect(); }
         }
       } catch (Exception error) {
-        Log.e("YHQeMixMobile", "导出文件失败", error);
+        Log.e("QeMixFlowMobile", "导出文件失败", error);
         errorMessage = "导出文件失败：" + error.getMessage();
       } finally {
         try {
           HttpURLConnection cleanup = openExport(url, cookie, "DELETE");
           try {
             int code = cleanup.getResponseCode();
-            if (code >= 400 && code != 404) Log.w("YHQeMixMobile", "清理导出文件失败：HTTP " + code);
+            if (code >= 400 && code != 404) Log.w("QeMixFlowMobile", "清理导出文件失败：HTTP " + code);
           } finally { cleanup.disconnect(); }
-        } catch (IOException error) { Log.w("YHQeMixMobile", "清理导出文件失败", error); }
+        } catch (IOException error) { Log.w("QeMixFlowMobile", "清理导出文件失败", error); }
       }
       notifySave(request.getQueryParameter("requestId"), saved, errorMessage);
     }, "mobileExport").start();
@@ -857,7 +857,7 @@ public class mobileActivity extends Activity {
         message.put("detail", new JSONObject(detail));
         try { geckoPort.postMessage(new JSONObject(message)); }
         catch (RuntimeException sendError) { showError("无法返回文件保存结果：" + sendError.getMessage(), sendError); }
-      } else showError("GeckoView 原生通信已断开。请重新打开 YHQeMix。", null);
+      } else showError("GeckoView 原生通信已断开。请重新打开 QeMixFlow。", null);
     });
   }
 
@@ -895,7 +895,7 @@ public class mobileActivity extends Activity {
       if (isDestroyed() || failed) return;
       failed = true;
       browserStage = "error";
-      Log.e("YHQeMixMobile", message, error);
+      Log.e("QeMixFlowMobile", message, error);
       progressView.setVisibility(View.GONE);
       statusView.setGravity(Gravity.TOP | Gravity.START);
       int padding = (int) (24 * getResources().getDisplayMetrics().density);
@@ -968,7 +968,7 @@ public class mobileActivity extends Activity {
     if (geckoSession != null) geckoSession.close();
     new Thread(() -> {
       try { removeProgramDirectory(uploadDirectory); }
-      catch (IOException error) { Log.w("YHQeMixMobile", "清理文件缓存失败", error); }
+      catch (IOException error) { Log.w("QeMixFlowMobile", "清理文件缓存失败", error); }
     }, "mobileImportCleanup").start();
     super.onDestroy();
   }
