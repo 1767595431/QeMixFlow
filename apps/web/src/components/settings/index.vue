@@ -38,7 +38,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, shallowRef } from "vue";
 import { hasDesktopUpdate } from "@/stores/desktopUpdate";
-import { isMobile } from "@/lib/platform";
 import {
   IconPalette,
   IconSettings,
@@ -50,7 +49,6 @@ import {
   IconPlugConnected,
   IconUserCog,
   IconSubtitlesAi,
-  IconDevices,
 } from "@tabler/icons-vue";
 
 const settingsPanels = [
@@ -72,9 +70,6 @@ const settingsPanels = [
     component: defineAsyncComponent(() => import("./panels/pluginMarket/index.vue")),
   },
   { id: "mcp", label: "MCP", icon: IconPlugConnected, groupLabel: "通讯", component: defineAsyncComponent(() => import("./panels/mcp/index.vue")) },
-  ...(!isMobile
-    ? [{ id: "deviceLink", label: "设备互联", icon: IconDevices, component: defineAsyncComponent(() => import("./panels/deviceLink.vue")) }]
-    : []),
   {
     id: "personalization",
     label: "个性化",

@@ -140,11 +140,11 @@ const autoInstallProviders = [tfRouter];
 `apps/web/src/pages/hello/bg.vue` 与素材：
 
 - 原右侧画面是 **4×4 精灵图**（`assets/image.png`，16 帧骑马动画，靠 `getSourceRect` 按网格切片播放）。现改为**三张静态剧照轮换**：`assets/helloArt1.jpg`（仙宫）→ `helloArt2.jpg`（列车窗外）→ `helloArt3.jpg`（海边小店），每 8 秒切换一次。
-- 素材按画格成像区比例（`0.88 × 181 / 125 ≈ 1.274`）居中裁切并压到 1280×1005、JPEG 质量 90，三张合计约 860 KB（原图各 5 MB）；顺带裁掉了原图自带的「即梦AI」水印。
-- 渲染保留胶片质感（颗粒、抖动、曝光闪烁、灯漏），只删除逐帧精灵切片与 `frameIndex`；画格内改为整图 `cover` 填充。
+- 素材**保留原图比例**（1440×2560 → 1200×2133，JPEG 质量 90，三张合计约 1.6 MB），不做裁切。
+- 渲染方式：`bg.vue` 重写为最简轮播组件——三张 `<img>` 叠加，`object-fit: cover` **撑满整个右侧面板**，靠 `opacity` 交叉淡入切换。**不使用任何胶片效果**（无颗粒、抖动、曝光闪烁、灯漏、齿孔与画格外框），也不再走 canvas。
 - 原 `assets/image.png` 已移除（工作区留档：可视化临时目录的 `image.removed.png`）。
 
-> 若后续换图：按同一比例裁切后替换 `helloArtN.jpg` 即可，或在 `bg.vue` 的 `artSources` / `artInterval` 调整张数与间隔。
+> 若后续换图：直接替换 `helloArtN.jpg` 即可（任意比例都会被 `cover` 撑满，超出部分居中裁掉），或在 `bg.vue` 的 `artSources` / `artInterval` 调整张数与间隔。
 
 ### 9. 引导页彩色化 + 启动默认进入引导页
 
@@ -154,6 +154,24 @@ const autoInstallProviders = [tfRouter];
 ### 10. 首页去掉 Star 提示与 GitHub 按钮
 
 `apps/web/src/pages/home/index.vue`：删除 `.githubAction` 整块（「点个 Star 支持一下」提示 + 箭头 SVG + GitHub 外链按钮）、对应的 `.githubAction` / `.starHint` 样式，以及只为它引入的 `IconBrandGithub`。顶部现在只剩左侧的「设置」按钮。
+
+### 11. 隐藏「设备互联」（手机连接）
+
+上游 v2.0.6 新增的功能，定制版用不到，三处入口一并移除：
+
+| 位置 | 处理 |
+| --- | --- |
+| `apps/web/src/components/settings/index.vue` | 删除 `deviceLink` 面板条目，以及只为它引入的 `isMobile`、`IconDevices` |
+| `apps/web/src/pages/home/index.vue` | 删除顶部「设备互联」按钮、`<mobileConnect>` 弹窗挂载点，以及 `@/lib/mobile` 导入、`mobileConnectVisible` / `mobileConnect`、`IconQrcode` / `IconDeviceDesktop` |
+| `apps/web/src/pages/hello/index.vue` | 同上，并删除 `.mobileConnectButton` 样式 |
+
+> `apps/web/src/components/mobileConnect.vue` 与 `lib/mobile.ts` 保留未删（上游文件，避免影响后续合并）。
+
+### 12. 引导页说明文案
+
+`apps/web/src/pages/hello/index.vue`：把「选择登录TF-Router可直接自动配置，无需任何复杂操作，即可开始创作。」改为「请自行配置，无需任何复杂操作，即可开始创作。」（与「登录 TF-Router 自动配置」按钮已移除保持一致）。
+
+> 该句以中文原文作为 i18n 键，改后其他语言没有对应译文，会回退显示这句中文。
 
 ---
 

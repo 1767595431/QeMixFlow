@@ -6,7 +6,6 @@
         <el-badge isDot :hidden="!hasDesktopUpdate">
           <el-button round size="large" :icon="IconSettings" :aria-label="hasDesktopUpdate ? '设置，有新版本可用' : '设置'" @click="settingsVisible = true">设置</el-button>
         </el-badge>
-        <el-button round size="large" :type="deviceHubEnabled ? 'success' : undefined" :plain="deviceHubEnabled" :icon="deviceHubEnabled || mobileConnection.mode === 'remote' ? IconDeviceDesktop : IconQrcode" @click="mobileConnectVisible = true">{{ mobileConnectionLabel }}</el-button>
       </div>
     </el-header>
     <el-main class="pageContent">
@@ -78,7 +77,6 @@
       </section>
     </el-main>
     <settings v-model="settingsVisible" />
-    <mobileConnect v-model="mobileConnectVisible" />
     <workspacePicker ref="relocationPicker" hideTrigger />
   </el-container>
 </template>
@@ -92,7 +90,7 @@ import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox, type InputInstance } from "element-plus";
 import { getReadableFileMimeType, readableFileAccept } from "@toonflow/server/documentFormats";
 import {
-  IconSettings, IconQrcode, IconDeviceDesktop,
+  IconSettings,
   IconArrowUp, IconLayoutGrid,
   IconList, IconSortDescending,
   IconSortAscending, IconFolder, IconEdit,
@@ -105,15 +103,12 @@ import type { AgentAttachment } from "@/components/agent/types";
 import logoUrl from "@toonflow/assets/logo.svg";
 import { useWorkspaceStore, type Project } from "@/stores/workspace";
 import { hasDesktopUpdate } from "@/stores/desktopUpdate";
-import { deviceHubEnabled, mobileConnection, mobileConnectionLabel } from "@/lib/mobile";
 import useWorkspaceFiles from "@/lib/workspaceFiles";
 import settings from "@/components/settings/index.vue";
 import bg from "./bg.vue";
 import workspacePicker from "./workspacePicker.vue";
 
 const settingsVisible = ref(false);
-const mobileConnectVisible = ref(false);
-const mobileConnect = defineAsyncComponent(() => import("@/components/mobileConnect.vue"));
 const router = useRouter();
 const creating = ref(false);
 const opening = ref(false);
