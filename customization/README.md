@@ -206,6 +206,14 @@ const autoInstallProviders = [tfRouter];
 
 > 删除后 `.welcomeHeader` 里只剩文字，`display: flex` 的居中布局与 86×42 图标容器一并移除。
 
+### 16. 画布工具栏去掉「帮助」入口
+
+`apps/web/src/pages/workspace/index.vue`：删掉画布下方工具栏里的「?」帮助按钮及其弹出菜单（使用教程 / 汇报 BUG / 加入交流群 / 商务合作）。
+
+连带清理（该入口下线后全部成为死代码）：二维码联系弹窗 `<el-dialog>`、`helpVisible` / `contactVisible` / `contactType` / `contacts` / `contactInfo` / `showContact`、`IconHelp` / `IconBook` / `IconBug` / `IconBrandWechat` / `IconBriefcase` 与 tdesign `QRCode` 导入，以及 `.toolTrigger` / `.helpMenu` / `.helpAction` / `.contactContent` / `.contactTip` 样式。
+
+> i18n 里「使用教程 / 汇报 BUG / 加入交流群 / 商务合作」等词条保留未删（不再被引用），与上游其它未用词条一致。
+
 ---
 
 ## 四、运行时数据清理
