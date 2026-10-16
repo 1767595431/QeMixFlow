@@ -159,7 +159,6 @@ async function start() {
     const height = Math.min(960, workArea.height - 64);
     const mainWindow = new BrowserWindow({
       title: "QeMixFlow",
-      title: "QeMixFlow",
       url: `http://127.0.0.1:${connection.port}/?desktop=1${connection.remote ? "&remote=1" : ""}`,
       hidden: Boolean(splash),
       frame: {

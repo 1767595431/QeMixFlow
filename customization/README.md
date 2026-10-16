@@ -74,9 +74,9 @@
 
 ### 应用图标：`qmix.png`
 
-源图：项目根目录 `qmix.png`（105×80 的 Y+H 品牌标记，白底、非透明）。
+源图：项目根目录 `qmix.png`（105×80 的 Y+H 品牌标记，32 位带透明通道）。
 
-- 生成脚本：`customization/buildAppIcon.ps1`——取源图四角颜色作底色，把标记居中放到正方形画布（左右留 14% 边距），再输出多尺寸 ICO 与 iconset。
+- 生成脚本：`customization/buildAppIcon.ps1`——把标记居中放到**透明**正方形画布（四边留 14% 边距），再输出多尺寸 ICO 与 iconset。画布透明而不是取源图四角颜色作底色，任务栏、开始菜单与安装向导里不会出现白方块。
 - 产物：
   - `packages/assets/logo.ico`：含 16/24/32/48/64/128/256 七个尺寸，被 `electrobun.config.ts` 的 `win.icon` 与 `apps/desktop/scripts/packageWindows.ts` 使用。
   - `packages/assets/logo.iconset/icon_*.png`：10 个尺寸，供 macOS 打包，以及 Android（`apps/mobile/scripts/build.ts`）与鸿蒙（`compat/ohos/build.ts`）取用 `icon_512x512.png`。
@@ -194,6 +194,12 @@ const autoInstallProviders = [tfRouter];
 
 > 位置按需求定在左侧文字面板内，不覆盖右侧剧照——右侧仍保持「不加文字和图片」。
 
+### 14. 引导页加「开始创作」主按钮
+
+`apps/web/src/pages/hello/index.vue`：在说明文案下方加一个通栏主按钮「开始创作」（`type="primary"`，最小高 48px，圆角与页面面板一致），点击执行 `completeSetup`——写入引导完成状态后跳转 `/home`。
+
+> 「开始创作」与下方原有的次要按钮「稍后配置」调用同一个方法，区别只在视觉主次：「添加私有提供商」进 `custom` 配置视图，两个直接开始的入口都是跳过配置先进入主页（与上游「稍后配置」的行为一致）。
+
 ---
 
 ## 四、运行时数据清理
@@ -292,4 +298,6 @@ const autoInstallProviders = [tfRouter];
 - 每次跑 dev，`apps/server/src/router.ts` 与 `apps/web/src/types/components.generated.d.ts` 会被工具链按 LF 重写而显示为「已修改」，内容其实一致；提交前 `git restore` 即可。
 - Vite 开发服务由 **node.exe** 承载（不是 bun.exe），按 bun 过滤杀不掉它。
 - 重启 PC 端前必须先结束上一版桌面进程，否则 `build/desktop` 被占用会报 `AccessDenied`。
+- 应用图标源图 `qmix.png` 与公司 logo `YHQeMix.png` 都在仓库根目录；改图标后需重跑 `customization/buildAppIcon.ps1` 并**重建 PC 端**，ICO 是构建时嵌进 exe 的。
+- 引导页移除「登录 TF-Router 自动配置」按钮后，`openLogin`、`login` 视图与 `configureProviders` 已经没有入口，属于保留未删的上游死代码（没有再导出的其他引用）；要彻底精简可整块删除。
 - 火山引擎与可灵两个模板按各自公开 API 编写，**尚未用真实密钥验证**；首次接入时请用真机跑一次生成，确认模型 ID 与参数与你的账号权限一致。

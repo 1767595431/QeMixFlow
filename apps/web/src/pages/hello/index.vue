@@ -31,6 +31,7 @@
         <h1 id="welcomeTitle">快速开始</h1>
         <p class="description">请自行配置，无需任何复杂操作，即可开始创作。</p>
 
+        <el-button class="startButton" type="primary" :loading="saving" @click="completeSetup">开始创作</el-button>
         <div class="secondaryActions">
           <el-button class="secondaryButton" round @click="view = 'custom'">
             <icon-key class="buttonIcon" />
@@ -296,6 +297,16 @@ onBeforeUnmount(() => {
         color: var(--el-text-color-secondary);
         font-size: 14px;
         line-height: 1.8;
+      }
+
+      .startButton {
+        width: 100%;
+        height: auto;
+        min-height: 48px;
+        padding: 12px;
+        border-radius: calc(var(--ui-radius) * 1.625);
+        font-size: 16px;
+        font-weight: 600;
       }
 
       .buttonIcon {

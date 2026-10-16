@@ -13,13 +13,12 @@ $iconsetDir = Join-Path $assetsDir "logo.iconset"
 
 $source = [System.Drawing.Bitmap]::FromFile($sourcePath)
 
-# ACT: 源图不是正方形，取四角颜色当底色，把原图居中放在正方形画布上（左右留 14% 边距）。
+# ACT: 源图不是正方形，把它居中放在透明正方形画布上（左右留 14% 边距）。
 # 若源图带水印，先手工裁掉再放进来。
-$background = $source.GetPixel(0, 0)
 $side = [int]([Math]::Max($source.Width, $source.Height) * 1.14)
 $master = New-Object System.Drawing.Bitmap($side, $side, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
 $canvas = [System.Drawing.Graphics]::FromImage($master)
-$canvas.Clear($background)
+$canvas.Clear([System.Drawing.Color]::Transparent)
 $scale = [Math]::Min($side * 0.86 / $source.Width, $side * 0.86 / $source.Height)
 $drawWidth = [int]($source.Width * $scale)
 $drawHeight = [int]($source.Height * $scale)
