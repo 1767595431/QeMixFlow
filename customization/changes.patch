@@ -1388,7 +1388,7 @@ index f9a259ce69c7dca918ba7c381998613280a9f418..35db1a6fbcdd68e558ae83d62a7cbbd0
  const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? resolve(import.meta.dirname, "../../../../../data");
  mkdirSync(dataDirectory, { recursive: true });
 diff --git a/apps/server/src/utils/desktop/index.ts b/apps/server/src/utils/desktop/index.ts
-index 2ea742a50aab2aef783d017fec9e8c17cab493fc..85c0498b73f20e6b356567e50aa354ce77bdb841 100644
+index 2ea742a50aab2aef783d017fec9e8c17cab493fc..08c84687cc7b6ec8b60546766ca889636df00f31 100644
 --- a/apps/server/src/utils/desktop/index.ts
 +++ b/apps/server/src/utils/desktop/index.ts
 @@ -5,8 +5,9 @@ import conf from "@/utils/conf";
@@ -1397,7 +1397,7 @@ index 2ea742a50aab2aef783d017fec9e8c17cab493fc..85c0498b73f20e6b356567e50aa354ce
  const updateBaseUrls = {
 -  official: "https://api.toonflow.net/web/version/desktopUpdates",
 -  github: "https://github.com/HBAI-Ltd/Toonflow-app/releases/latest/download",
-+  // ACT: 定制版只认自己的发布源；两个入口都指向自有仓库，避免客户端被换成上游 Toonflow 构建。
++  // ACT: 定制版只认自己的发布源；两个入口都指向自有仓库，避免客户端被换成上游官方版本。
 +  official: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
 +  github: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
  };
@@ -42096,7 +42096,7 @@ index a1106485ef4d8e6d19a329cbbb622d5f4e75e430..70a5717387625392392502ca9ac1237e
  const phaseLabels = { idle: "等待下载", downloading: "正在下载", verifying: "正在校验", installing: "正在安装", completed: "下载完成", error: "下载失败", cancelled: "已取消" };
  const config = computed<FfmpegConfig>(() => {
 diff --git a/apps/web/src/components/settings/panels/pluginMarket/index.vue b/apps/web/src/components/settings/panels/pluginMarket/index.vue
-index 2b483b29f967b6edf2db06fa076a0cbe48e75ddb..1efbeec364be2a0f884f5eda0d54eca02aad1179 100644
+index 2b483b29f967b6edf2db06fa076a0cbe48e75ddb..6bafddd8ba15cf1b4029037ad983e42ffdd60e60 100644
 --- a/apps/web/src/components/settings/panels/pluginMarket/index.vue
 +++ b/apps/web/src/components/settings/panels/pluginMarket/index.vue
 @@ -7,12 +7,6 @@
@@ -42125,7 +42125,7 @@ index 2b483b29f967b6edf2db06fa076a0cbe48e75ddb..1efbeec364be2a0f884f5eda0d54eca0
    }
  }
  
-+// ACT: 内置节点/工具的 author 随品牌改为 QeMixFlow，远程官方插件仍是 Toonflow，两者都算官方。
++// ACT: 内置节点/工具的 author 已随品牌改为 QeMixFlow，远程官方插件沿用上游作者标识，两者都算官方。
 +function isOfficialAuthor(author: string | undefined) {
 +  return author === "Toonflow" || author === "QeMixFlow";
 +}

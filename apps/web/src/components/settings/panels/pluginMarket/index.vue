@@ -612,7 +612,7 @@ async function copyCard(url: string) {
   }
 }
 
-// ACT: 内置节点/工具的 author 随品牌改为 QeMixFlow，远程官方插件仍是 Toonflow，两者都算官方。
+// ACT: 内置节点/工具的 author 已随品牌改为 QeMixFlow，远程官方插件沿用上游作者标识，两者都算官方。
 function isOfficialAuthor(author: string | undefined) {
   return author === "Toonflow" || author === "QeMixFlow";
 }

@@ -13,8 +13,9 @@ Set-Location $RepoRoot
 
 # 品牌替换规则：前置排除 / @ 字母数字下划线（避开 URL、包名、dockviewToonflow），后置排除 /2.0（避开 UA）。
 $brandPatterns = @('(?<![/@A-Za-z0-9_])Toonflow(?!\/2\.0)', 'YHQeMix')
-# 作者元数据与判断语句必须保持 Toonflow，否则内置插件/技能的识别会失效。
-$authorPattern = "author(\s*[:!=]+\s*)([""']?)Toonflow"
+# 作者元数据与判断语句必须保持 Toonflow，否则远程官方插件/技能的识别会失效。
+# ACT: 三组都要保留，第一组是字面量 author——之前漏掉它，替换后会把 `author: Toonflow` 写成 `: Toonflow`。
+$authorPattern = "(author)(\s*[:!=]+\s*)([""']?)Toonflow"
 $authorTag = "@@AUTHOR_KEEP@@"
 
 # 用 ripgrep 先筛出真正含 Toonflow 的文件，避免递归枚举 node_modules。
@@ -30,7 +31,7 @@ foreach ($relative in $files) {
     if (-not $file) { continue }
     $text = [System.IO.File]::ReadAllText($file.FullName)
 
-    $guarded = [regex]::Replace($text, $authorPattern, ('$1$2' + $authorTag))
+    $guarded = [regex]::Replace($text, $authorPattern, ('$1$2$3' + $authorTag))
     $hits = 0
     $replaced = $guarded
     foreach ($pattern in $brandPatterns) {

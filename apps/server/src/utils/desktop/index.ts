@@ -5,7 +5,7 @@ import conf from "@/utils/conf";
 import type { DesktopRuntime, desktopUpdateAttempt, updateSnapshot } from "@/types/desktop";
 
 const updateBaseUrls = {
-  // ACT: 定制版只认自己的发布源；两个入口都指向自有仓库，避免客户端被换成上游 Toonflow 构建。
+  // ACT: 定制版只认自己的发布源；两个入口都指向自有仓库，避免客户端被换成上游官方版本。
   official: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
   github: "https://github.com/1767595431/QeMixFlow/releases/latest/download",
 };

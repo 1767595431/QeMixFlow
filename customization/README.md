@@ -2,7 +2,7 @@
 
 本目录记录本项目相对上游 Toonflow 源码所做的**全部定制改动**。上游发布新版本、需要重新拉取源码并重新编译时，按本文末尾「版本更新后如何沿用」操作，即可保留这些改动。
 
-基线：`HBAI-Ltd/Toonflow-app`，提交 `72a895c`（tag `v2.0.4`）。
+基线：`HBAI-Ltd/Toonflow-app` 的 **tag `v2.0.6`（`c6756b9`）+ develop 最新 `31a96b2`**（2026-10-17 合并）。`changes.patch` 以该基线生成；上游发布新 tag 后按第五节流程更新基线。
 
 ---
 
@@ -290,19 +290,26 @@ const autoInstallProviders = [tfRouter];
    pwsh -File customization/reapply.ps1
    ```
 
-7. **最后重新生成补丁**，让基线指向新版本：
+7. **最后重新生成补丁**，让基线指向新版本（`vX.Y.Z` 换成新 tag；如果跟进的是未发版的 develop，换成对应提交号）：
 
    ```powershell
    git diff vX.Y.Z HEAD --binary --full-index -- . ':(exclude)customization' > customization/changes.patch
    ```
+
+   > 补丁必须**先提交再生成**：`git diff A HEAD` 只比较两个提交，工作区未提交的改动不会进补丁。
 
 ### 升级记录
 
 | 版本 | 上游规模 | 结果 |
 | --- | --- | --- |
 | v2.0.4 → v2.0.6 | 20 个提交、406 个文件（新增 `apps/mobile`、设备互联、compshare 供应商、供应商价格/余额接口） | 定制全部保留，类型检查通过 |
+| v2.0.6 → develop `31a96b2` | 4 个提交、22 个文件（画布中键粘贴修复、macOS Ctrl+滚轮缩放修复、README） | 直接 merge，无冲突；定制全部保留，三端类型检查通过，安装包重建并实装验证 |
 
 保留的上游新功能：设备互联（手机连接按钮与设置面板）、插件市场「发现插件」、供应商价格/余额相关类型与 UI。
+
+> 本次跟进时 `develop` 上还没有新的版本号，官方最新 release 仍是 **v2.0.6**，因此 `app.version` 保持 2.0.6 不变。
+>
+> 同时修掉 `applyBrand.ps1` 的作者保护 bug：原正则 `author(\s*[:!=]+\s*)(["']?)Toonflow` 替换时漏回了字面量 `author`，会把 `author: Toonflow` 写成 `: Toonflow`（上一轮技能 frontmatter 损坏就是它造成的）。现在三组都保留，重跑为零改动。
 
 ---
 
